@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Status {
+  SUCCESS
+  PENDING
+  CANCEL
+}
+
+enum Role {
+  ADMIN
+  CASHIER
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH
+  MIDTRANS
+}
+
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  email String @unique
+  password String
+  role Role @default(CASHIER)
+  order Order[]
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Categories {
+  id String @id @default(uuid())
+  name String @unique
+  deletedAt DateTime?
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String @unique
+  categoryId String
+  categories Categories @relation(fields: [categoryId], references: [id])
+  sku String @unique
+  price Decimal
+  stock Int
+  orderItem OrderItem[]
+  deletedAt   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id String @id @default(uuid())
+  orderNumber String @unique
+  totalAmount Decimal
+  status OrderStatus @default(PENDING)
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  orderItem OrderItem[]
+  payment Payment?
+  deletedAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model OrderItem {
+  id String @id @default(uuid())
+  quantity Int
+  subtotal Decimal
+  price Decimal
+
+  productId String
+  orderId String
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+
+
+model Payment {
+  id String @id @default(uuid())
+  paymentNumber String @unique
+  amount Decimal
+  method PaymentMethod
+  status PaymentStatus @default(PENDING)
+  provider String?
+  providerTransactionId String?
+  providerPaymentType String?
+  snapToken String?
+  paidAt DateTime?
+  orderId String @unique
+  order Order @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
