@@ -38,4 +38,5 @@ userRoutes.delete(
   authorizeRole("ADMIN"),
   deleteUserController,
 );
+
 export default userRoutes;

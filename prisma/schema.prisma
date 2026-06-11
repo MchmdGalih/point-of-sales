@@ -54,7 +54,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Categories {
+model Category {
   id String @id @default(uuid())
   name String @unique
   deletedAt DateTime?
@@ -69,7 +69,7 @@ model Product {
   id String @id @default(uuid())
   name String @unique
   categoryId String
-  categories Categories @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
   sku String @unique
   price Decimal
   stock Int
