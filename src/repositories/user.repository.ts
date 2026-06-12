@@ -29,6 +29,9 @@ export const getAllUserRepository = async (query: UserQueryDTO) => {
       omit: {
         password: true,
       },
+      include: {
+        order: true,
+      },
       orderBy: {
         createdAt: "desc",
       },

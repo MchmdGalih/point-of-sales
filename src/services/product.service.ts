@@ -1,7 +1,48 @@
-import { getAllProductRepository } from "../repositories/product.repository";
-import { generateSku } from "../utils/generateSKU";
+import type { ProductQueryDTO } from "../dto/product.dto";
+import { CustomError } from "../errors/customError";
+import {
+  createProductRepository,
+  deleteProductRepository,
+  getAllProductRepository,
+  getProductByIdRepository,
+} from "../repositories/product.repository";
+import { generateCode } from "../utils/generate";
+import type { ProductDTO } from "../validations/product.validation";
 import { getCategoryByIdService } from "./category.service";
 
-export const getAllProductService = async () => {
-  return await getAllProductRepository();
+export const getAllProductService = async (query: ProductQueryDTO) => {
+  return await getAllProductRepository(query);
+};
+
+export const createProductService = async (payload: ProductDTO) => {
+  const { name, price, stock, categoryId } = payload;
+
+  const category = await getCategoryByIdService(categoryId);
+
+  const sku_code = await generateCode("PRD");
+
+  const product = await createProductRepository({
+    name,
+    price,
+    stock,
+    sku: sku_code,
+    categoryId: category.id,
+  });
+
+  return {
+    ...product,
+    price: Number(product.price),
+  };
+};
+
+export const getProductByIdService = async (id: string) => {
+  const product = await getProductByIdRepository(id);
+
+  if (!product) throw new CustomError("Product not found", 404);
+
+  return product;
+};
+
+export const deleteProductService = async (id: string) => {
+  return await deleteProductRepository(id);
 };

@@ -5,17 +5,17 @@ import type {
 } from "../validations/category.validation";
 
 export const getAllCategoryRepository = () => {
-  return prisma.categories.findMany({
+  return prisma.category.findMany({
     where: { deletedAt: null },
   });
 };
 
 export const createCategoryRepository = (name: CreateCategoryDTO) => {
-  return prisma.categories.create({ data: name });
+  return prisma.category.create({ data: name });
 };
 
 export const getCategoryByIdRepository = (id: string) => {
-  return prisma.categories.findUnique({
+  return prisma.category.findUnique({
     where: {
       id,
       deletedAt: null,
@@ -27,7 +27,7 @@ export const updateCategoryRepository = (
   id: string,
   name: UpdateCategoryDTO,
 ) => {
-  return prisma.categories.update({
+  return prisma.category.update({
     where: {
       id,
       deletedAt: null,
@@ -37,7 +37,7 @@ export const updateCategoryRepository = (
 };
 
 export const deleteCategoryRepository = (id: string) => {
-  return prisma.categories.delete({
+  return prisma.category.delete({
     where: {
       id,
       deletedAt: new Date(),
