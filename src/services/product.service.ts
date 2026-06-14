@@ -5,9 +5,13 @@ import {
   deleteProductRepository,
   getAllProductRepository,
   getProductByIdRepository,
+  updateProductRepository,
 } from "../repositories/product.repository";
 import { generateCode } from "../utils/generate";
-import type { ProductDTO } from "../validations/product.validation";
+import type {
+  ProductDTO,
+  UpdateProductPayload,
+} from "../validations/product.validation";
 import { getCategoryByIdService } from "./category.service";
 
 export const getAllProductService = async (query: ProductQueryDTO) => {
@@ -41,6 +45,17 @@ export const getProductByIdService = async (id: string) => {
   if (!product) throw new CustomError("Product not found", 404);
 
   return product;
+};
+
+export const updateProductService = async (
+  id: string,
+  payload: UpdateProductPayload,
+) => {
+  const data = Object.fromEntries(
+    Object.entries(payload).filter(([_, value]) => value !== undefined),
+  );
+
+  return await updateProductRepository(id, data);
 };
 
 export const deleteProductService = async (id: string) => {

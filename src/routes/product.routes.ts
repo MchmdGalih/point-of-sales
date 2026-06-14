@@ -4,9 +4,13 @@ import {
   deleteProductController,
   getAllProductsController,
   getProductByIdController,
+  updateProductController,
 } from "../controller/product.controller";
 import { validate } from "../middleware/zodValidation";
-import { productSchema } from "../validations/product.validation";
+import {
+  productSchema,
+  UpdateProductSchema,
+} from "../validations/product.validation";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { authorizeRole } from "../middleware/roleMiddleware";
 
@@ -21,6 +25,13 @@ productRoutes.post(
   createProductController,
 );
 productRoutes.get("/:id", getProductByIdController);
+productRoutes.put(
+  "/edit/:id",
+  validate(UpdateProductSchema),
+  authMiddleware,
+  authorizeRole("ADMIN"),
+  updateProductController,
+);
 productRoutes.delete(
   "/:id",
   authMiddleware,

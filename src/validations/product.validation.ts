@@ -7,4 +7,7 @@ export const productSchema = z.object({
   categoryId: z.string().min(1),
 });
 
+export const UpdateProductSchema = productSchema.partial();
+
 export type ProductDTO = z.infer<typeof productSchema>;
+export type UpdateProductPayload = z.infer<typeof UpdateProductSchema>;

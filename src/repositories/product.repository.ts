@@ -1,5 +1,6 @@
 import type { CreateProductPayload, ProductQueryDTO } from "../dto/product.dto";
 import { prisma } from "../lib/prisma";
+import type { UpdateProductPayload } from "../validations/product.validation";
 
 export const getAllProductRepository = async (query: ProductQueryDTO) => {
   const {
@@ -56,6 +57,19 @@ export const getAllProductRepository = async (query: ProductQueryDTO) => {
 export const createProductRepository = (payload: CreateProductPayload) => {
   return prisma.product.create({
     data: payload,
+  });
+};
+
+export const updateProductRepository = (
+  id: string,
+  payload: UpdateProductPayload,
+) => {
+  return prisma.product.update({
+    where: {
+      id,
+      deletedAt: null,
+    },
+    data: payload as object,
   });
 };
 

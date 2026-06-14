@@ -4,6 +4,7 @@ import {
   deleteProductService,
   getAllProductService,
   getProductByIdService,
+  updateProductService,
 } from "../services/product.service";
 
 export const getAllProductsController = async (
@@ -66,6 +67,27 @@ export const getProductByIdController = async (
     res.status(200).json({
       status: "success",
       message: "Product fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProductController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await updateProductService(
+      req.params.id as string,
+      req.body,
+    );
+
+    res.status(201).json({
+      status: "success",
+      message: "Product updated successfully",
       data: result,
     });
   } catch (error) {
