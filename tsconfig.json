@@ -1,15 +1,24 @@
 {
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "generated",
+    "dist"
+  ],
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "ignoreDeprecations": "6.0",
     "types": [],
     // For nodejs:
@@ -42,5 +51,5 @@
       "./src/types",
       "./node_modules/@types"
     ]
-  }
+  },
 }

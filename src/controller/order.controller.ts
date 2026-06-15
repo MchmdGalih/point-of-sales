@@ -1,5 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import { getAllOrderService } from "../services/order.service";
+import {
+  createOrderService,
+  getAllOrderService,
+} from "../services/order.service";
 
 export const getAllOrderController = async (
   req: Request,
@@ -15,5 +18,18 @@ export const getAllOrderController = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const createOrderController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.id;
+  try {
+    const result = await createOrderService(userId, req.body);
+  } catch (error) {
+    console.log(error);
   }
 };

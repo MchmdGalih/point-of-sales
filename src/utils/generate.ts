@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma";
 
-type EntityType = "PRD" | "ORD";
+type EntityType = "PRD" | "ORD" | "PAY";
 
 export const generateCode = async (type: EntityType): Promise<string> => {
   let count = 0;
@@ -20,6 +20,10 @@ export const generateCode = async (type: EntityType): Promise<string> => {
         },
       });
       break;
+    case "PAY":
+      count = await prisma.payment.count();
+      break;
+
     default:
       break;
   }

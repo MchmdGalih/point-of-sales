@@ -58,6 +58,13 @@ export const userFindExistingRepository = (username: string, email: string) => {
       OR: [{ username: username }, { email: email }],
       deletedAt: null,
     },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+      password: true,
+    },
   });
 };
 

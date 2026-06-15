@@ -1,5 +1,6 @@
 import type { ProductQueryDTO } from "../dto/product.dto";
 import { CustomError } from "../errors/customError";
+import { getCategoryByIdRepository } from "../repositories/category.repository";
 import {
   createProductRepository,
   deleteProductRepository,
@@ -12,7 +13,6 @@ import type {
   ProductDTO,
   UpdateProductPayload,
 } from "../validations/product.validation";
-import { getCategoryByIdService } from "./category.service";
 
 export const getAllProductService = async (query: ProductQueryDTO) => {
   return await getAllProductRepository(query);
@@ -21,7 +21,9 @@ export const getAllProductService = async (query: ProductQueryDTO) => {
 export const createProductService = async (payload: ProductDTO) => {
   const { name, price, stock, categoryId } = payload;
 
-  const category = await getCategoryByIdService(categoryId);
+  const category = await getCategoryByIdRepository(categoryId);
+
+  if (!category) throw new CustomError("Category not found", 404);
 
   const sku_code = await generateCode("PRD");
 
