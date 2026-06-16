@@ -1,6 +1,5 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { CreateOrderPayload } from "../validations/order.validation";
 
 export const getAllOrderRepository = () => {
   return prisma.order.findMany({ where: { deletedAt: null } });
@@ -11,6 +10,13 @@ export const createOrderRepository = (
 ) => {
   return prisma.order.create({
     data: payload,
+    include: { orderItem: true },
+  });
+};
+
+export const getOrderByIdRepository = (id: string) => {
+  return prisma.order.findUnique({
+    where: { id, deletedAt: null },
     include: { orderItem: true, payment: true },
   });
 };

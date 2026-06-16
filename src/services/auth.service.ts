@@ -3,7 +3,7 @@ import { registerRepository } from "../repositories/auth.repoistory";
 import type { LoginDTO, RegisterDTO } from "../validations/auth.validation";
 import { userFindExistingRepository } from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
-import { generateToken } from "../utils/tokenService";
+import { generateToken } from "../utils/token-service";
 export const registerService = async (payload: RegisterDTO) => {
   const { username, email, password } = payload;
 

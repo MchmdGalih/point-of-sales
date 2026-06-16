@@ -8,7 +8,7 @@ import {
   getProductByIdRepository,
   updateProductRepository,
 } from "../repositories/product.repository";
-import { generateCode } from "../utils/generate";
+import { generateCode } from "../utils/generate-code";
 import type {
   ProductDTO,
   UpdateProductPayload,

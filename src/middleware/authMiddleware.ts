@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { CustomError } from "../errors/customError";
-import { verifyToken } from "../utils/tokenService";
+import { verifyToken } from "../utils/token-service";
 import type { JwtPayload } from "jsonwebtoken";
 
 export const authMiddleware = (
