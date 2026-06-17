@@ -33,7 +33,6 @@ export const createPaymentController = async (
     res.status(200).json({
       status: "success",
       data: {
-        orderId: result.orderId,
         redirectUrl: result.redirectUrl,
         snapToken: result.snapToken,
       },

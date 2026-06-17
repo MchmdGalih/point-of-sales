@@ -27,7 +27,7 @@ export const createPaymentService = async (orderId: string, userId: string) => {
       gross_amount: Math.round(Number(orders.totalAmount)),
     },
     customer_details: {
-      username: users.username,
+      first_name: users.username,
       email: users.email,
     },
     items_details: orders.orderItem.map((item: any) => ({
@@ -39,6 +39,8 @@ export const createPaymentService = async (orderId: string, userId: string) => {
   };
 
   const transaction = await snap.createTransaction(parameter);
+  console.log(transaction, "service");
+
   const paymentNumber = await generateCode("PAY");
 
   await createPaymentRepository({
@@ -51,7 +53,6 @@ export const createPaymentService = async (orderId: string, userId: string) => {
   });
 
   return {
-    orderId: orders.id,
     snapToken: transaction.token,
     redirectUrl: transaction.redirect_url,
   };

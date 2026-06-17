@@ -5,6 +5,7 @@ import categoryRoutes from "./category.routes";
 import productRoutes from "./product.routes";
 import orderRoutes from "./order.routes";
 import paymentRoutes from "./payment.routes";
+import notificationRoutes from "./midtrans-notification.routes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/category", categoryRoutes);
 router.use("/product", productRoutes);
 router.use("/order", orderRoutes);
 router.use("/payment", paymentRoutes);
+router.use("/midtrans-notification", notificationRoutes);
 
 export default router;

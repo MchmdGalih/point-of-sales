@@ -1,3 +1,4 @@
+import "dotenv/config";
 import midtransClient from "midtrans-client";
 
 const serverKey = process.env.MIDTRANS_SERVER_KEY;
