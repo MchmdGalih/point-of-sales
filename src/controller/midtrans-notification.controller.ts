@@ -7,8 +7,13 @@ export const handleMidtransNotificationController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await handleMidtransNotificationService(req.body);
+    await handleMidtransNotificationService(req.body);
+
+    res.status(200).json({
+      status: "success",
+      message: "Midtrans notification handled successfully",
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };

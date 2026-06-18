@@ -8,6 +8,8 @@ export const verifyMidtransSignature = (params: {
 }) => {
   const { orderId, statusCode, signatureKey, grossAmount } = params;
 
+  console.log(grossAmount, "grossAmount");
+
   const hash = crypto
     .createHash("sha512")
     .update(

@@ -4,10 +4,16 @@ import {
   getAllPaymentController,
 } from "../controller/payment.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { authorizeRole } from "../middleware/roleMiddleware";
 
 const paymentRoutes = Router();
 
-paymentRoutes.get("/", getAllPaymentController);
+paymentRoutes.get(
+  "/",
+  authMiddleware,
+  authorizeRole("ADMIN"),
+  getAllPaymentController,
+);
 paymentRoutes.post("/", authMiddleware, createPaymentController);
 
 export default paymentRoutes;

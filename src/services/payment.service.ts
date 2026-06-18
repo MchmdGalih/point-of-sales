@@ -39,7 +39,6 @@ export const createPaymentService = async (orderId: string, userId: string) => {
   };
 
   const transaction = await snap.createTransaction(parameter);
-  console.log(transaction, "service");
 
   const paymentNumber = await generateCode("PAY");
 
