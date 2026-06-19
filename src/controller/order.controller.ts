@@ -10,12 +10,25 @@ export const getAllOrderController = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const search = req.query.search as string;
+  const status = req.query.status as string;
+  const orderNumber = req.query.orderNumber as string;
+
   try {
-    const result = await getAllOrderService();
+    const result = await getAllOrderService({
+      page,
+      limit,
+      search,
+      status,
+      orderNumber,
+    });
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   } catch (error) {
     next(error);
@@ -34,7 +47,7 @@ export const createOrderController = async (
     res.status(201).json({
       status: "success",
       message: "Order created successfully",
-      data: result,
+      data: result.data,
     });
   } catch (error) {
     next(error);
@@ -52,7 +65,7 @@ export const getOrderByIdController = async (
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
-      data: result,
+      data: result.data,
     });
   } catch (error) {
     next(error);

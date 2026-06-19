@@ -9,8 +9,22 @@ export const getAllPaymentController = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const search = req.query.search as string;
+  const status = req.query.status as string;
+  const orderId = req.query.orderId as string;
+  const method = req.query.method as string;
+
   try {
-    const result = await getAllPaymentService();
+    const result = await getAllPaymentService({
+      page,
+      limit,
+      search,
+      status,
+      orderId,
+      method,
+    });
     res.status(200).json({
       status: "success",
       message: "Payment fetched successfully",

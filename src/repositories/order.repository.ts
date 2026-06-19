@@ -1,8 +1,53 @@
 import type { OrderStatus, Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 
-export const getAllOrderRepository = () => {
-  return prisma.order.findMany({ where: { deletedAt: null } });
+interface RepoQuery {
+  take: number;
+  skip: number;
+  search?: string;
+  status?: string;
+  orderNumber?: string;
+}
+
+export const getAllOrderRepository = async (query: RepoQuery) => {
+  const { take, skip, search, status, orderNumber } = query;
+
+  const where = {
+    deletedAt: null,
+
+    ...(search && {
+      user: {
+        username: {
+          contains: search,
+          mode: "insensitive" as const,
+        },
+      },
+    }),
+    ...(orderNumber && {
+      orderNumber: {
+        contains: orderNumber,
+        mode: "insensitive" as const,
+      },
+    }),
+    ...(status && { status: status as OrderStatus }),
+  };
+
+  const [orders, totalData] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      skip,
+      take,
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  return {
+    orders,
+    totalData,
+  };
 };
 
 export const createOrderRepository = (

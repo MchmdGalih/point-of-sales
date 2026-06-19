@@ -10,8 +10,35 @@ import { getUserByIdRepository } from "../repositories/user.repository";
 import { generateCode } from "../utils/generate-code";
 import type { CreateOrderPayload } from "../validations/order.validation";
 
-export const getAllOrderService = async () => {
-  return await getAllOrderRepository();
+interface OrderQueryDTO {
+  page: number;
+  limit: number;
+  search?: string;
+  status?: string;
+  orderNumber?: string;
+}
+
+export const getAllOrderService = async (query: OrderQueryDTO) => {
+  const { page = 1, limit = 10, search, status, orderNumber } = query;
+
+  const skip = (page - 1) * limit;
+
+  const result = await getAllOrderRepository({
+    skip,
+    take: limit,
+    ...(search && { search }),
+    ...(status && { status }),
+    ...(orderNumber && { orderNumber }),
+  });
+
+  return {
+    data: result.orders,
+    meta: {
+      page,
+      limit,
+      totalData: result.totalData,
+    },
+  };
 };
 
 export const createOrderService = async (
@@ -66,7 +93,9 @@ export const createOrderService = async (
     orderItem: { create: orderItemDatas },
   });
 
-  return order;
+  return {
+    data: order,
+  };
 };
 
 export const getOrderByIdService = async (id: string) => {
@@ -74,5 +103,7 @@ export const getOrderByIdService = async (id: string) => {
 
   if (!order) throw new CustomError("Order not found", 404);
 
-  return order;
+  return {
+    data: order,
+  };
 };

@@ -5,6 +5,8 @@ import {
 } from "../controller/payment.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { authorizeRole } from "../middleware/roleMiddleware";
+import { paymentSchema } from "../validations/payment.validation";
+import { validate } from "../middleware/zodValidation";
 
 const paymentRoutes = Router();
 
@@ -14,6 +16,11 @@ paymentRoutes.get(
   authorizeRole("ADMIN"),
   getAllPaymentController,
 );
-paymentRoutes.post("/", authMiddleware, createPaymentController);
+paymentRoutes.post(
+  "/",
+  authMiddleware,
+  validate(paymentSchema),
+  createPaymentController,
+);
 
 export default paymentRoutes;

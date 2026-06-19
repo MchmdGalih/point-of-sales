@@ -1,3 +1,4 @@
+import type { PaymentQueryDTO } from "../dto/payment.dto";
 import { CustomError } from "../errors/customError";
 import { snap } from "../lib/midtrans";
 import { getOrderByIdRepository } from "../repositories/order.repository";
@@ -8,8 +9,10 @@ import {
 import { getUserByIdRepository } from "../repositories/user.repository";
 import { generateCode } from "../utils/generate-code";
 
-export const getAllPaymentService = async () => {
-  return await getAllPaymentRepository();
+export const getAllPaymentService = async (query: PaymentQueryDTO) => {
+  const {} = query;
+
+  return await getAllPaymentRepository(query);
 };
 
 export const createPaymentService = async (orderId: string, userId: string) => {
