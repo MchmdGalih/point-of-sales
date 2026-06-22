@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import {
   createOrderService,
+  deleteOrderService,
   getAllOrderService,
   getOrderByIdService,
 } from "../services/order.service";
@@ -66,6 +67,23 @@ export const getOrderByIdController = async (
       status: "success",
       message: "Order fetched successfully",
       data: result.data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteOrdetController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    await deleteOrderService(id as string);
+    res.status(200).json({
+      status: "success",
+      message: "Order deleted successfully",
     });
   } catch (error) {
     next(error);

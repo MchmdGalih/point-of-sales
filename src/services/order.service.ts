@@ -1,7 +1,7 @@
-import type { Prisma } from "../../generated/prisma/client";
 import { CustomError } from "../errors/customError";
 import {
   createOrderRepository,
+  deleteOrderRepository,
   getAllOrderRepository,
   getOrderByIdRepository,
 } from "../repositories/order.repository";
@@ -16,6 +16,13 @@ interface OrderQueryDTO {
   search?: string;
   status?: string;
   orderNumber?: string;
+}
+
+interface OrderItems {
+  productId: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
 }
 
 export const getAllOrderService = async (query: OrderQueryDTO) => {
@@ -57,28 +64,27 @@ export const createOrderService = async (
 
   let totalAmount = 0;
 
-  const orderItemDatas: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] =
-    orderItems.map((item) => {
-      const product = products.find((p) => p.id === item.productId);
+  const orderItemDatas: OrderItems[] = orderItems.map((item) => {
+    const product = products.find((p) => p.id === item.productId);
 
-      if (!product) {
-        throw new CustomError("One or more product", 404);
-      }
+    if (!product) {
+      throw new CustomError("One or more product", 404);
+    }
 
-      if (product.stock < item.quantity) {
-        throw new CustomError("Insufficient stock", 400);
-      }
+    if (product.stock < item.quantity) {
+      throw new CustomError("Insufficient stock", 400);
+    }
 
-      const subtotal = Number(product.price) * item.quantity;
-      totalAmount += subtotal;
+    const subtotal = Number(product.price) * item.quantity;
+    totalAmount += subtotal;
 
-      return {
-        productId: product.id,
-        quantity: item.quantity,
-        price: Number(product.price),
-        subtotal,
-      };
-    });
+    return {
+      productId: product.id,
+      quantity: item.quantity,
+      price: Number(product.price),
+      subtotal,
+    };
+  });
 
   const user = await getUserByIdRepository(userId);
 
@@ -106,4 +112,8 @@ export const getOrderByIdService = async (id: string) => {
   return {
     data: order,
   };
+};
+
+export const deleteOrderService = async (id: string) => {
+  return await deleteOrderRepository(id);
 };

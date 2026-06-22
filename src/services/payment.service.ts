@@ -1,7 +1,7 @@
 import { PaymentMethod } from "../../generated/prisma/enums";
 import type { PaymentQueryDTO } from "../dto/payment.dto";
 import { CustomError } from "../errors/customError";
-import { snap } from "../lib/midtrans";
+import { snap } from "../config/midtrans";
 import { getOrderByIdRepository } from "../repositories/order.repository";
 import {
   createPaymentRepository,

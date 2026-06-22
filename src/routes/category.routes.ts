@@ -15,8 +15,8 @@ const categoryRoutes = Router();
 categoryRoutes.get("/", getAllCategoryController);
 categoryRoutes.post(
   "/create",
-  // authMiddleware,
-  // authorizeRole("ADMIN"),
+  authMiddleware,
+  authorizeRole("ADMIN"),
   validate(categorySchema),
   createCategoryController,
 );

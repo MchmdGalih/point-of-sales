@@ -37,9 +37,11 @@ export const updateCategoryRepository = (
 };
 
 export const deleteCategoryRepository = (id: string) => {
-  return prisma.category.delete({
+  return prisma.category.update({
     where: {
       id,
+    },
+    data: {
       deletedAt: new Date(),
     },
   });

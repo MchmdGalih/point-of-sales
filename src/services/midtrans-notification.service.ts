@@ -1,4 +1,8 @@
-import { OrderStatus, PaymentStatus } from "../../generated/prisma/enums";
+import {
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+} from "../../generated/prisma/enums";
 import { CustomError } from "../errors/customError";
 import { prisma } from "../lib/prisma";
 import {
@@ -48,7 +52,7 @@ export const handleMidtransNotificationService = async (notification: any) => {
     await updateOrderStatusRepository(tx, order.id, orderStatus);
     await updatePaymentByOrderIdRepository(tx, order.id, {
       status: paymentStatus,
-      provider: "MIDTRANS",
+      provider: PaymentMethod.MIDTRANS,
       providerPaymentType: payment_type,
       providerTransactionId: transaction_id,
       paidAt: paymentStatus === PaymentStatus.PAID ? new Date() : null,

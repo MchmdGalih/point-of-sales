@@ -83,3 +83,14 @@ export const updateOrderStatusRepository = (
     data: { status },
   });
 };
+
+export const deleteOrderRepository = (id: string) => {
+  return prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      deletedAt: new Date(),
+    },
+  });
+};

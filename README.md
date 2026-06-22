@@ -4,8 +4,6 @@
 
 Project Point of Sales (POS) ini merupakan project latihan mandiri yang saya kembangkan untuk mempelajari backend development menggunakan Node.js, Express, TypeScript, dan Prisma ORM.
 
-Saat ini fokus utama pada pengembangan backend seperti autentikasi, manajemen user, serta role-based access (ADMIN & CASHIER). Frontend akan ditambahkan secara bertahap untuk menjadikan project ini sebagai aplikasi fullstack.
-
 ---
 
 ## 🚀 Tech Stack
@@ -24,6 +22,8 @@ Saat ini fokus utama pada pengembangan backend seperti autentikasi, manajemen us
 ## 📁 Project Structure
 
 src/
+
+├── config/
 ├── controllers/
 ├── services/
 ├── repositories/
@@ -31,6 +31,9 @@ src/
 ├── middleware/
 ├── validations/
 ├── dto/
+├── errors/
+├── types/
+├── utils/
 ├── lib/
 │ └── prisma.ts
 └── index.ts
@@ -45,6 +48,16 @@ src/
 - Soft Delete Implementation
 - Input Validation using Zod
 - JWT Authentication
+- Product Management (CRUD)
+- Category Management (CRUD)
+- Order Management (CRUD)
+- Payment Integration (CASH & MIDTRANS)
+- Midtrans Payment Gateway Integration (Snap API)
+- Payment Webhook Handling (Auto update payment & order status)
+- Input Validation using Zod
+- Stock (auto decrease on order)
+- Stock Management (auto decrease on order)
+- API Pagination & Filtering
 
 ---
 
@@ -81,13 +94,18 @@ npm install
 DATABASE_URL="postgresql://user:password@localhost:5432/pos_db"
 JWT_SECRET="your-secret-key"
 PORT=3000
+MIDTRANS_SERVER_KEY = "your-midtrans-server-key"
+MIDTRANS_CLIENT_KEY = "your-midtrans-client-key"
+
 ```
+
 ### 4. Prisma setup
 
 ```bash
 npx prisma generate
 npx prisma migrate dev
 ```
+
 ### 5. Run Project Development
 
 ```bash
