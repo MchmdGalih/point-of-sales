@@ -1,13 +1,12 @@
 import type {
   CreateUserDTO,
+  RepoQueryUser,
   UpdateUserDTO,
-  UserQueryDTO,
 } from "../dto/user.dto";
 import { prisma } from "../lib/prisma";
 
-export const getAllUserRepository = async (query: UserQueryDTO) => {
-  const { page = 1, limit = 10, search, role } = query;
-  const skip = (page - 1) * limit;
+export const getAllUserRepository = async (query: RepoQueryUser) => {
+  const { take, skip, search, role } = query;
 
   const where = {
     deletedAt: null,
@@ -24,8 +23,7 @@ export const getAllUserRepository = async (query: UserQueryDTO) => {
     prisma.user.findMany({
       where,
       skip,
-      take: limit,
-
+      take,
       omit: {
         password: true,
       },
@@ -43,12 +41,7 @@ export const getAllUserRepository = async (query: UserQueryDTO) => {
 
   return {
     users,
-    pagination: {
-      page,
-      limit,
-      totalData,
-      totalPage: Math.ceil(totalData / limit),
-    },
+    totalData,
   };
 };
 

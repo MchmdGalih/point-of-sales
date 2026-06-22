@@ -15,3 +15,13 @@ export interface ProductQueryDTO {
   inStock?: boolean;
   categoryId?: string;
 }
+
+export interface RepoQueryProduct {
+  take: number;
+  skip: number;
+  search?: string;
+  inStock?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  categoryId?: string;
+}

@@ -16,7 +16,24 @@ import {
 import { Role } from "../../generated/prisma/enums";
 
 export const getAllUserService = async (query: UserQueryDTO) => {
-  return await getAllUserRepository(query);
+  const { page = 1, limit = 10, search, role } = query;
+  const skip = (page - 1) * limit;
+
+  const result = await getAllUserRepository({
+    skip,
+    take: limit,
+    ...(search && { search }),
+    ...(role && { role }),
+  });
+
+  return {
+    data: result.users,
+    meta: {
+      page,
+      limit,
+      totalData: result.totalData,
+    },
+  };
 };
 
 export const createUserService = async (payload: CreateUserDTO) => {
@@ -28,12 +45,14 @@ export const createUserService = async (payload: CreateUserDTO) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  return await createUserRepository({
+  const result = await createUserRepository({
     username,
     email,
     password: hashedPassword,
     role: role ?? Role.CASHIER,
   });
+
+  console.log(result);
 };
 
 export const getUserByIdService = async (id: string) => {

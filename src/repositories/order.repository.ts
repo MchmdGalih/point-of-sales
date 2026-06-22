@@ -1,7 +1,7 @@
 import type { OrderStatus, Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 
-interface RepoQuery {
+interface RepoQueryOrder {
   take: number;
   skip: number;
   search?: string;
@@ -9,7 +9,7 @@ interface RepoQuery {
   orderNumber?: string;
 }
 
-export const getAllOrderRepository = async (query: RepoQuery) => {
+export const getAllOrderRepository = async (query: RepoQueryOrder) => {
   const { take, skip, search, status, orderNumber } = query;
 
   const where = {

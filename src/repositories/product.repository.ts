@@ -1,20 +1,13 @@
 import type { Prisma } from "../../generated/prisma/client";
-import type { CreateProductPayload, ProductQueryDTO } from "../dto/product.dto";
+import type {
+  CreateProductPayload,
+  RepoQueryProduct,
+} from "../dto/product.dto";
 import { prisma } from "../lib/prisma";
 import type { UpdateProductPayload } from "../validations/product.validation";
 
-export const getAllProductRepository = async (query: ProductQueryDTO) => {
-  const {
-    page = 1,
-    limit = 10,
-    search,
-    minPrice,
-    maxPrice,
-    inStock,
-    categoryId,
-  } = query;
-
-  const skip = (page - 1) * limit;
+export const getAllProductRepository = async (query: RepoQueryProduct) => {
+  const { skip, take, search, minPrice, maxPrice, inStock, categoryId } = query;
 
   const where = {
     deletedAt: null,
@@ -23,6 +16,12 @@ export const getAllProductRepository = async (query: ProductQueryDTO) => {
         contains: search,
         mode: "insensitive" as const,
       },
+      ...(search && {
+        sku: {
+          contains: search,
+          mode: "insensitive" as const,
+        },
+      }),
     }),
     ...((minPrice || maxPrice) && {
       price: {
@@ -38,7 +37,7 @@ export const getAllProductRepository = async (query: ProductQueryDTO) => {
     prisma.product.findMany({
       where,
       skip,
-      take: limit,
+      take,
       orderBy: { createdAt: "desc" },
     }),
     prisma.product.count({ where }),
@@ -46,12 +45,7 @@ export const getAllProductRepository = async (query: ProductQueryDTO) => {
 
   return {
     products,
-    pagination: {
-      page,
-      limit,
-      totalData,
-      totalPage: Math.ceil(totalData / limit),
-    },
+    totalData,
   };
 };
 

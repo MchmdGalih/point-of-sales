@@ -1,3 +1,4 @@
+import { PaymentMethod } from "../../generated/prisma/enums";
 import type { PaymentQueryDTO } from "../dto/payment.dto";
 import { CustomError } from "../errors/customError";
 import { snap } from "../lib/midtrans";
@@ -10,9 +11,33 @@ import { getUserByIdRepository } from "../repositories/user.repository";
 import { generateCode } from "../utils/generate-code";
 
 export const getAllPaymentService = async (query: PaymentQueryDTO) => {
-  const {} = query;
+  const {
+    page = 1,
+    limit = 10,
+    paymentNumber,
+    status,
+    orderId,
+    method,
+  } = query;
+  const skip = (page - 1) * limit;
 
-  return await getAllPaymentRepository(query);
+  const result = await getAllPaymentRepository({
+    skip,
+    take: limit,
+    ...(paymentNumber && { paymentNumber }),
+    ...(status && { status }),
+    ...(orderId && { orderId }),
+    ...(method && { method }),
+  });
+
+  return {
+    data: result.payments,
+    meta: {
+      page,
+      limit,
+      totalData: result.totalData,
+    },
+  };
 };
 
 export const createPaymentService = async (orderId: string, userId: string) => {
@@ -31,7 +56,6 @@ export const createPaymentService = async (orderId: string, userId: string) => {
     },
     customer_details: {
       first_name: users.username,
-      email: users.email,
     },
     items_details: orders.orderItem.map((item: any) => ({
       id: item.productId,
@@ -49,7 +73,7 @@ export const createPaymentService = async (orderId: string, userId: string) => {
     orderId: orders.id,
     paymentNumber,
     snapToken: transaction.token,
-    method: "MIDTRANS",
+    method: PaymentMethod.MIDTRANS,
     status: "PENDING",
     amount: Math.round(Number(orders.totalAmount)),
   });

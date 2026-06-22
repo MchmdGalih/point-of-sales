@@ -28,8 +28,8 @@ export const getAllUserController = async (
     res.status(200).json({
       status: "success",
       message: "User fetched successfully",
-      data: result.users,
-      pagination: result.pagination,
+      data: result.data,
+      pagination: result.meta,
     });
   } catch (error) {
     next(error);

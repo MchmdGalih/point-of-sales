@@ -15,7 +15,35 @@ import type {
 } from "../validations/product.validation";
 
 export const getAllProductService = async (query: ProductQueryDTO) => {
-  return await getAllProductRepository(query);
+  const {
+    page = 1,
+    limit = 10,
+    search,
+    minPrice,
+    maxPrice,
+    inStock,
+    categoryId,
+  } = query;
+  const skip = (page - 1) * limit;
+
+  const result = await getAllProductRepository({
+    skip,
+    take: limit,
+    ...(search && { search }),
+    ...(minPrice && { minPrice }),
+    ...(maxPrice && { maxPrice }),
+    ...(inStock && { inStock }),
+    ...(categoryId && { categoryId }),
+  });
+
+  return {
+    data: result.products,
+    meta: {
+      page,
+      limit,
+      totalData: result.totalData,
+    },
+  };
 };
 
 export const createProductService = async (payload: ProductDTO) => {

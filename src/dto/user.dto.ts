@@ -14,3 +14,10 @@ export interface UserQueryDTO {
   search?: string;
   role?: Role;
 }
+
+export interface RepoQueryUser {
+  take: number;
+  skip: number;
+  search?: string;
+  role?: Role;
+}

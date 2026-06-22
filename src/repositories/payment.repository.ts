@@ -1,37 +1,39 @@
-import type { PaymentStatus, Prisma } from "../../generated/prisma/client";
-import type { PaymentQueryDTO } from "../dto/payment.dto";
+import type {
+  PaymentMethod,
+  PaymentStatus,
+  Prisma,
+} from "../../generated/prisma/client";
+import type { RepoQueryPayment } from "../dto/payment.dto";
 import { prisma } from "../lib/prisma";
 
-export const getAllPaymentRepository = async (query: PaymentQueryDTO) => {
-  const { page = 1, limit = 10, paymentMethod, status, orderId } = query;
-  const skip = (page - 1) * limit;
+export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
+  const { skip, paymentNumber, take, method, status, orderId } = query;
 
   const where = {
+    ...(paymentNumber && {
+      paymentNumber: {
+        contains: paymentNumber,
+        mode: "insensitive" as const,
+      },
+    }),
     ...(status && { status: status as PaymentStatus }),
-    ...(paymentMethod && { paymentMethod }),
+    ...(method && { method: method as PaymentMethod }),
     ...(orderId && { orderId }),
   };
-
   const [payments, totalData] = await Promise.all([
     prisma.payment.findMany({
       where,
       skip,
-      take: limit,
+      take,
       orderBy: {
         createdAt: "desc",
       },
     }),
     prisma.payment.count({ where }),
   ]);
-
   return {
     payments,
-    pagination: {
-      page,
-      limit,
-      totalData,
-      totalPage: Math.ceil(totalData / limit),
-    },
+    totalData,
   };
 };
 

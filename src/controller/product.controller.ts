@@ -33,7 +33,12 @@ export const getAllProductsController = async (
     res.status(200).json({
       status: "success",
       message: "Products fetched successfully",
-      data: result,
+      data: result.data,
+      meta: {
+        page,
+        limit,
+        totalData: result.meta.totalData,
+      },
     });
   } catch (error) {
     next(error);
