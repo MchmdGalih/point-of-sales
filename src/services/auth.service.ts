@@ -1,10 +1,19 @@
 import bcrypt from "bcrypt";
-import { registerRepository } from "../repositories/auth.repoistory";
-import type { LoginDTO, RegisterDTO } from "../validations/auth.validation";
+import {
+  logoutRepository,
+  registerRepository,
+} from "../repositories/auth.repository";
 import { userFindExistingRepository } from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
-export const registerService = async (payload: RegisterDTO) => {
+import type {
+  CreateUserRequest,
+  LoginUserRequest,
+  UserResponse,
+} from "../model/user-model";
+export const registerService = async (
+  payload: CreateUserRequest,
+): Promise<UserResponse> => {
   const { username, email, password } = payload;
 
   const existingUser = await userFindExistingRepository(username, email);
@@ -15,7 +24,7 @@ export const registerService = async (payload: RegisterDTO) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser: RegisterDTO = {
+  const newUser = {
     username,
     email,
     password: hashedPassword,
@@ -24,7 +33,9 @@ export const registerService = async (payload: RegisterDTO) => {
   return await registerRepository(newUser);
 };
 
-export const loginService = async (payload: LoginDTO) => {
+export const loginService = async (
+  payload: LoginUserRequest,
+): Promise<UserResponse> => {
   const { email, password } = payload;
 
   const user = await userFindExistingRepository("", email);
@@ -35,13 +46,13 @@ export const loginService = async (payload: LoginDTO) => {
 
   if (!isMatch) throw new CustomError("Invalid credentials", 400);
 
-  const tokenPayload = {
+  const tokenPayload: object = {
     id: user.id,
     email: user.email,
     role: user.role,
   };
 
-  const token = generateToken(tokenPayload);
+  const token: string = generateToken(tokenPayload);
 
   return {
     id: user.id,
@@ -50,4 +61,8 @@ export const loginService = async (payload: LoginDTO) => {
     role: user.role,
     token,
   };
+};
+
+export const logoutService = async (id: string): Promise<UserResponse> => {
+  return await logoutRepository(id);
 };

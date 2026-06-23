@@ -1,20 +1,24 @@
 import { prisma } from "../lib/prisma";
 import type {
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
-} from "../validations/category.validation";
+  CategoryResponse,
+  CreateCategoryRequest,
+} from "../model/category-model";
 
-export const getAllCategoryRepository = () => {
+export const getAllCategoryRepository = (): Promise<CategoryResponse[]> => {
   return prisma.category.findMany({
     where: { deletedAt: null },
   });
 };
 
-export const createCategoryRepository = (name: CreateCategoryDTO) => {
+export const createCategoryRepository = (
+  name: CreateCategoryRequest,
+): Promise<CategoryResponse> => {
   return prisma.category.create({ data: name });
 };
 
-export const getCategoryByIdRepository = (id: string) => {
+export const getCategoryByIdRepository = (
+  id: string,
+): Promise<CategoryResponse | null> => {
   return prisma.category.findUnique({
     where: {
       id,
@@ -25,8 +29,8 @@ export const getCategoryByIdRepository = (id: string) => {
 
 export const updateCategoryRepository = (
   id: string,
-  name: UpdateCategoryDTO,
-) => {
+  name: CreateCategoryRequest,
+): Promise<CategoryResponse> => {
   return prisma.category.update({
     where: {
       id,
@@ -36,7 +40,9 @@ export const updateCategoryRepository = (
   });
 };
 
-export const deleteCategoryRepository = (id: string) => {
+export const deleteCategoryRepository = (
+  id: string,
+): Promise<CategoryResponse> => {
   return prisma.category.update({
     where: {
       id,

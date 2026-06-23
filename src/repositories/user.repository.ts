@@ -1,11 +1,10 @@
-import type {
-  CreateUserDTO,
-  RepoQueryUser,
-  UpdateUserDTO,
-} from "../dto/user.dto";
+import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
+import type { UserQueryRepository, UserResponse } from "../model/user-model";
 
-export const getAllUserRepository = async (query: RepoQueryUser) => {
+export const getAllUserRepository = async (
+  query: UserQueryRepository,
+): Promise<{ users: UserResponse[]; totalData: number }> => {
   const { take, skip, search, role } = query;
 
   const where = {
@@ -61,7 +60,9 @@ export const userFindExistingRepository = (username: string, email: string) => {
   });
 };
 
-export const createUserRepository = (payload: CreateUserDTO) => {
+export const createUserRepository = (
+  payload: Prisma.UserCreateInput,
+): Promise<UserResponse> => {
   return prisma.user.create({
     data: payload,
     omit: {
@@ -70,7 +71,9 @@ export const createUserRepository = (payload: CreateUserDTO) => {
   });
 };
 
-export const getUserByIdRepository = (id: string) => {
+export const getUserByIdRepository = (
+  id: string,
+): Promise<UserResponse | null> => {
   return prisma.user.findUnique({
     where: {
       id,
@@ -82,7 +85,10 @@ export const getUserByIdRepository = (id: string) => {
   });
 };
 
-export const updateUserRepository = (id: string, payload: UpdateUserDTO) => {
+export const updateUserRepository = (
+  id: string,
+  payload: Prisma.UserUpdateInput,
+): Promise<UserResponse> => {
   return prisma.user.update({
     where: {
       id,
@@ -95,7 +101,7 @@ export const updateUserRepository = (id: string, payload: UpdateUserDTO) => {
   });
 };
 
-export const deleteUserRepository = (id: string) => {
+export const deleteUserRepository = (id: string): Promise<UserResponse> => {
   return prisma.user.update({
     where: {
       id,

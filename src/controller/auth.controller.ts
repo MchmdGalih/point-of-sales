@@ -1,5 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { loginService, registerService } from "../services/auth.service";
+import {
+  loginService,
+  logoutService,
+  registerService,
+} from "../services/auth.service";
 
 export const registerController = async (
   req: Request,
@@ -29,6 +33,24 @@ export const loginController = async (
       status: "success",
       message: "User logged in successfully",
       data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logoutController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.id;
+
+  try {
+    const result = await logoutService(userId as string);
+    res.status(200).json({
+      status: "success",
+      message: "User logged out successfully",
     });
   } catch (error) {
     next(error);

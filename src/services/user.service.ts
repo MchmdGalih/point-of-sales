@@ -1,9 +1,4 @@
 import bcrypt from "bcrypt";
-import type {
-  CreateUserDTO,
-  UpdateUserDTO,
-  UserQueryDTO,
-} from "../dto/user.dto";
 import { CustomError } from "../errors/customError";
 import {
   createUserRepository,
@@ -14,8 +9,17 @@ import {
   userFindExistingRepository,
 } from "../repositories/user.repository";
 import { Role } from "../../generated/prisma/enums";
+import type {
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserListResponse,
+  UserQueryRequest,
+  UserResponse,
+} from "../model/user-model";
 
-export const getAllUserService = async (query: UserQueryDTO) => {
+export const getAllUserService = async (
+  query: UserQueryRequest,
+): Promise<UserListResponse> => {
   const { page = 1, limit = 10, search, role } = query;
   const skip = (page - 1) * limit;
 
@@ -31,12 +35,15 @@ export const getAllUserService = async (query: UserQueryDTO) => {
     meta: {
       page,
       limit,
+      totalPage: Math.ceil(result.totalData / limit),
       totalData: result.totalData,
     },
   };
 };
 
-export const createUserService = async (payload: CreateUserDTO) => {
+export const createUserService = async (
+  payload: CreateUserRequest,
+): Promise<UserResponse> => {
   const { username, email, password, role } = payload;
 
   const existingUser = await userFindExistingRepository(username, email);
@@ -52,10 +59,10 @@ export const createUserService = async (payload: CreateUserDTO) => {
     role: role ?? Role.CASHIER,
   });
 
-  console.log(result);
+  return result;
 };
 
-export const getUserByIdService = async (id: string) => {
+export const getUserByIdService = async (id: string): Promise<UserResponse> => {
   const user = await getUserByIdRepository(id);
 
   if (!user) throw new CustomError("User not found", 404);
@@ -63,7 +70,10 @@ export const getUserByIdService = async (id: string) => {
   return user;
 };
 
-export const updateUserService = async (id: string, payload: UpdateUserDTO) => {
+export const updateUserService = async (
+  id: string,
+  payload: UpdateUserRequest,
+): Promise<UserResponse> => {
   const data = Object.fromEntries(
     Object.entries(payload).filter(([_, value]) => value !== undefined),
   );
@@ -74,6 +84,6 @@ export const updateUserService = async (id: string, payload: UpdateUserDTO) => {
   return await updateUserRepository(id, data);
 };
 
-export const deleteUserService = async (id: string) => {
+export const deleteUserService = async (id: string): Promise<UserResponse> => {
   return await deleteUserRepository(id);
 };

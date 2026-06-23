@@ -1,12 +1,16 @@
 import type { Prisma } from "../../generated/prisma/client";
-import type {
-  CreateProductPayload,
-  RepoQueryProduct,
-} from "../dto/product.dto";
 import { prisma } from "../lib/prisma";
-import type { UpdateProductPayload } from "../validations/product.validation";
+import type {
+  CreateProductRequest,
+  ListProductResponse,
+  ProductQueryRepo,
+  ProductResponse,
+  UpdateProductRequest,
+} from "../model/product-model";
 
-export const getAllProductRepository = async (query: RepoQueryProduct) => {
+export const getAllProductRepository = async (
+  query: ProductQueryRepo,
+): Promise<{ products: ProductResponse[]; totalData: number }> => {
   const { skip, take, search, minPrice, maxPrice, inStock, categoryId } = query;
 
   const where = {
@@ -44,35 +48,64 @@ export const getAllProductRepository = async (query: RepoQueryProduct) => {
   ]);
 
   return {
-    products,
+    products: products.map((product) => ({
+      ...product,
+      price: product.price.toNumber(),
+    })),
     totalData,
   };
 };
 
-export const createProductRepository = (payload: CreateProductPayload) => {
-  return prisma.product.create({
+export const createProductRepository = async (
+  payload: CreateProductRequest,
+): Promise<ProductResponse> => {
+  const product = await prisma.product.create({
     data: payload,
   });
+
+  return {
+    ...product,
+    price: product.price.toNumber(),
+  };
 };
 
-export const updateProductRepository = (
+export const updateProductRepository = async (
   id: string,
-  payload: UpdateProductPayload,
-) => {
-  return prisma.product.update({
+  payload: UpdateProductRequest,
+): Promise<ProductResponse> => {
+  const product = await prisma.product.update({
     where: {
       id,
       deletedAt: null,
     },
-    data: payload as object,
+    data: payload,
   });
+
+  return {
+    ...product,
+    price: product.price.toNumber(),
+  };
 };
 
-export const getProductByIdRepository = (id: string) => {
-  return prisma.product.findUnique({ where: { id, deletedAt: null } });
+export const getProductByIdRepository = async (
+  id: string,
+): Promise<ProductResponse | null> => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id,
+      deletedAt: null,
+    },
+  });
+
+  if (!product) return null;
+
+  return {
+    ...product,
+    price: product.price.toNumber(),
+  };
 };
 
-export const deleteProductRepository = (id: string) => {
+export const deleteProductRepository = (id: string): Promise<any> => {
   return prisma.product.update({
     where: { id },
     data: { deletedAt: new Date() },

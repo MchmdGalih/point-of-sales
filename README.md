@@ -19,27 +19,6 @@ Project Point of Sales (POS) ini merupakan project latihan mandiri yang saya kem
 
 ---
 
-## 📁 Project Structure
-
-src/
-
-├── config/
-├── controllers/
-├── services/
-├── repositories/
-├── routes/
-├── middleware/
-├── validations/
-├── dto/
-├── errors/
-├── types/
-├── utils/
-├── lib/
-│ └── prisma.ts
-└── index.ts
-
----
-
 ## 🔐 Features
 
 - User Authentication (Register & Login)
@@ -56,7 +35,6 @@ src/
 - Payment Webhook Handling (Auto update payment & order status)
 - Input Validation using Zod
 - Stock (auto decrease on order)
-- Stock Management (auto decrease on order)
 - API Pagination & Filtering
 
 ---
