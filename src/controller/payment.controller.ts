@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import {
   createPaymentService,
   getAllPaymentService,
-} from "../services/payment.service";
+} from "../services/payments/payment.service";
 import type {
   PaymentMethod,
   PaymentStatus,
@@ -46,15 +46,16 @@ export const createPaymentController = async (
   next: NextFunction,
 ) => {
   try {
-    const { orderId } = req.body;
+    const { orderId, method } = req.body;
 
-    const result = await createPaymentService(orderId, req.user?.id as string);
+    const result = await createPaymentService(
+      orderId,
+      method,
+      req.user?.id as string,
+    );
     res.status(200).json({
       status: "success",
-      data: {
-        redirectUrl: result.redirectUrl,
-        snapToken: result.snapToken,
-      },
+      data: result,
     });
   } catch (error) {
     next(error);

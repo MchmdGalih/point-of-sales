@@ -2,7 +2,6 @@ import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type {
   CreateProductRequest,
-  ListProductResponse,
   ProductQueryRepo,
   ProductResponse,
   UpdateProductRequest,

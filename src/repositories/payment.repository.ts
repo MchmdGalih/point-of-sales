@@ -5,6 +5,7 @@ import type {
 } from "../../generated/prisma/client";
 import type { RepoQueryPayment } from "../dto/payment.dto";
 import { prisma } from "../lib/prisma";
+import type { PaymentResponse } from "../model/payment-model";
 
 export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
   const { skip, paymentNumber, take, method, status, orderId } = query;
@@ -37,10 +38,14 @@ export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
   };
 };
 
-export const createPaymentRepository = (
+export const createPaymentRepository = async (
   payload: Prisma.PaymentUncheckedCreateInput,
-) => {
-  return prisma.payment.create({ data: payload });
+): Promise<PaymentResponse> => {
+  const payment = await prisma.payment.create({ data: payload });
+  return {
+    ...payment,
+    amount: payment.amount.toNumber(),
+  };
 };
 
 export const updatePaymentByOrderIdRepository = (
