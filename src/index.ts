@@ -3,8 +3,8 @@ import "dotenv/config";
 import express from "express";
 import router from "./routes/index";
 import { errorHandler } from "./errors/errorHandler";
-
 import { requestlogger } from "./middleware/loggerMiddleware";
+import { logger } from "./config/logger";
 
 const app = express();
 const port = 3000;
@@ -18,5 +18,5 @@ app.use(requestlogger);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`Server app running at port http://localhost:${port}`);
+  logger.info(`Server is running on http://localhost:${port}`);
 });

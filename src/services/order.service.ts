@@ -1,4 +1,5 @@
 import { CustomError } from "../errors/customError";
+import type { OrderQueryRequest } from "../model/order-model";
 import {
   createOrderRepository,
   deleteOrderRepository,
@@ -10,14 +11,6 @@ import { getUserByIdRepository } from "../repositories/user.repository";
 import { generateCode } from "../utils/generate-code";
 import type { CreateOrderPayload } from "../validations/order.validation";
 
-interface OrderQueryDTO {
-  page: number;
-  limit: number;
-  search?: string;
-  status?: string;
-  orderNumber?: string;
-}
-
 interface OrderItems {
   productId: string;
   quantity: number;
@@ -25,7 +18,7 @@ interface OrderItems {
   subtotal: number;
 }
 
-export const getAllOrderService = async (query: OrderQueryDTO) => {
+export const getAllOrderService = async (query: OrderQueryRequest) => {
   const { page = 1, limit = 10, search, status, orderNumber } = query;
 
   const skip = (page - 1) * limit;
@@ -52,7 +45,7 @@ export const createOrderService = async (
   userId: string,
   payload: CreateOrderPayload,
 ) => {
-  const { orderItems } = payload;
+  const { orderItems, customerName } = payload;
 
   const productIds = orderItems.map((item) => item.productId);
 
@@ -94,6 +87,7 @@ export const createOrderService = async (
 
   const order = await createOrderRepository({
     userId,
+    customerName,
     orderNumber,
     totalAmount,
     orderItem: { create: orderItemDatas },

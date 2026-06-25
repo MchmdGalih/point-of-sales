@@ -3,11 +3,12 @@ import type {
   PaymentStatus,
   Prisma,
 } from "../../generated/prisma/client";
-import type { RepoQueryPayment } from "../dto/payment.dto";
 import { prisma } from "../lib/prisma";
-import type { PaymentResponse } from "../model/payment-model";
+import type { PaymentResponse, RepoQueryPayment } from "../model/payment-model";
 
-export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
+export const getAllPaymentRepository = async (
+  query: RepoQueryPayment,
+): Promise<{ payments: PaymentResponse[]; totalData: number }> => {
   const { skip, paymentNumber, take, method, status, orderId } = query;
 
   const where = {
@@ -33,7 +34,10 @@ export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
     prisma.payment.count({ where }),
   ]);
   return {
-    payments,
+    payments: payments.map((payment) => ({
+      ...payment,
+      amount: payment.amount.toNumber(),
+    })),
     totalData,
   };
 };

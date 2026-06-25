@@ -1,19 +1,18 @@
 import { PaymentMethod } from "../../../generated/prisma/enums";
-import type { PaymentQueryDTO } from "../../dto/payment.dto";
 import { CustomError } from "../../errors/customError";
-import { snap } from "../../config/midtrans";
-import { getOrderByIdRepository } from "../../repositories/order.repository";
-import {
-  createPaymentRepository,
-  getAllPaymentRepository,
-} from "../../repositories/payment.repository";
-import { getUserByIdRepository } from "../../repositories/user.repository";
+import { getAllPaymentRepository } from "../../repositories/payment.repository";
 import { generateCode } from "../../utils/generate-code";
-import type { CreatePaymentResponse } from "../../model/payment-model";
+import type {
+  CreatePaymentResponse,
+  ListPaymentResponse,
+  PaymentQueryRequest,
+} from "../../model/payment-model";
 import { cashService } from "./cash.service";
 import { midtransService } from "./midtrans.service";
 
-export const getAllPaymentService = async (query: PaymentQueryDTO) => {
+export const getAllPaymentService = async (
+  query: PaymentQueryRequest,
+): Promise<ListPaymentResponse> => {
   const {
     page = 1,
     limit = 10,
@@ -38,6 +37,7 @@ export const getAllPaymentService = async (query: PaymentQueryDTO) => {
     meta: {
       page,
       limit,
+      totalPage: Math.ceil(result.totalData / limit),
       totalData: result.totalData,
     },
   };

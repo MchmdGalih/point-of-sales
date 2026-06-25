@@ -5,6 +5,7 @@ import {
   getAllOrderService,
   getOrderByIdService,
 } from "../services/order.service";
+import type { OrderStatus } from "../../generated/prisma/enums";
 
 export const getAllOrderController = async (
   req: Request,
@@ -14,7 +15,7 @@ export const getAllOrderController = async (
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const search = req.query.search as string;
-  const status = req.query.status as string;
+  const status = req.query.status as OrderStatus;
   const orderNumber = req.query.orderNumber as string;
 
   try {
@@ -42,8 +43,12 @@ export const createOrderController = async (
   next: NextFunction,
 ) => {
   const userId = req.user?.id;
+  const { orderItems, customerName } = req.body;
   try {
-    const result = await createOrderService(userId, req.body);
+    const result = await createOrderService(userId, {
+      orderItems,
+      customerName,
+    });
 
     res.status(201).json({
       status: "success",

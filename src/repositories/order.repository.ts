@@ -1,15 +1,10 @@
 import type { OrderStatus, Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
+import type { OrderResponse, RepoQueryOrder } from "../model/order-model";
 
-interface RepoQueryOrder {
-  take: number;
-  skip: number;
-  search?: string;
-  status?: string;
-  orderNumber?: string;
-}
-
-export const getAllOrderRepository = async (query: RepoQueryOrder) => {
+export const getAllOrderRepository = async (
+  query: RepoQueryOrder,
+): Promise<{ orders: OrderResponse[]; totalData: number }> => {
   const { take, skip, search, status, orderNumber } = query;
 
   const where = {
@@ -45,7 +40,10 @@ export const getAllOrderRepository = async (query: RepoQueryOrder) => {
   ]);
 
   return {
-    orders,
+    orders: orders.map((order) => ({
+      ...order,
+      totalAmount: Number(order.totalAmount),
+    })),
     totalData,
   };
 };
