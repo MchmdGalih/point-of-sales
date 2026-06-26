@@ -4,10 +4,11 @@ import { getOrderByIdRepository } from "../../repositories/order.repository";
 import { createPaymentRepository } from "../../repositories/payment.repository";
 
 export const cashService = async (
-  order: any,
+  orderId: string,
   paymentNumber: string,
+  userId: string,
 ): Promise<CreatePaymentResponse> => {
-  const existingOrder = await getOrderByIdRepository(order.id);
+  const existingOrder = await getOrderByIdRepository(orderId);
 
   if (!existingOrder) throw new Error("Order not found");
 

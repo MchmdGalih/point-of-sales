@@ -1,8 +1,4 @@
-import {
-  OrderStatus,
-  PaymentMethod,
-  PaymentStatus,
-} from "../../generated/prisma/enums";
+import { PaymentMethod, PaymentStatus } from "../../generated/prisma/enums";
 import { CustomError } from "../errors/customError";
 import { prisma } from "../lib/prisma";
 import {

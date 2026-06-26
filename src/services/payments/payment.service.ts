@@ -51,7 +51,7 @@ export const createPaymentService = async (
   const paymentNumber: string = await generateCode("PAY");
 
   if (method === PaymentMethod.CASH)
-    return await cashService(orderId, paymentNumber);
+    return await cashService(orderId, paymentNumber, userId);
 
   if (method === PaymentMethod.MIDTRANS)
     return await midtransService(orderId, paymentNumber, userId);

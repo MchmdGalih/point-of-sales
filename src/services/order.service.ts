@@ -1,5 +1,6 @@
+import { logger } from "../config/logger";
 import { CustomError } from "../errors/customError";
-import type { OrderQueryRequest } from "../model/order-model";
+import type { OrderItems, OrderQueryRequest } from "../model/order-model";
 import {
   createOrderRepository,
   deleteOrderRepository,
@@ -11,19 +12,12 @@ import { getUserByIdRepository } from "../repositories/user.repository";
 import { generateCode } from "../utils/generate-code";
 import type { CreateOrderPayload } from "../validations/order.validation";
 
-interface OrderItems {
-  productId: string;
-  quantity: number;
-  price: number;
-  subtotal: number;
-}
-
 export const getAllOrderService = async (query: OrderQueryRequest) => {
   const { page = 1, limit = 10, search, status, orderNumber } = query;
 
   const skip = (page - 1) * limit;
 
-  const result = await getAllOrderRepository({
+  const { orders, totalData } = await getAllOrderRepository({
     skip,
     take: limit,
     ...(search && { search }),
@@ -32,11 +26,12 @@ export const getAllOrderService = async (query: OrderQueryRequest) => {
   });
 
   return {
-    data: result.orders,
+    orders,
     meta: {
       page,
       limit,
-      totalData: result.totalData,
+      totalData,
+      totalPage: Math.ceil(totalData / limit),
     },
   };
 };
@@ -47,7 +42,7 @@ export const createOrderService = async (
 ) => {
   const { orderItems, customerName } = payload;
 
-  const productIds = orderItems.map((item) => item.productId);
+  const productIds = orderItems.map((item: any) => item.productId);
 
   const products = await getProductByIdsRepository(productIds);
 
@@ -57,7 +52,7 @@ export const createOrderService = async (
 
   let totalAmount = 0;
 
-  const orderItemDatas: OrderItems[] = orderItems.map((item) => {
+  const orderItemDatas = orderItems.map((item: any) => {
     const product = products.find((p) => p.id === item.productId);
 
     if (!product) {
@@ -103,9 +98,7 @@ export const getOrderByIdService = async (id: string) => {
 
   if (!order) throw new CustomError("Order not found", 404);
 
-  return {
-    data: order,
-  };
+  return order;
 };
 
 export const deleteOrderService = async (id: string) => {

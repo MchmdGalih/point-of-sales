@@ -8,6 +8,3 @@ export const productSchema = z.object({
 });
 
 export const UpdateProductSchema = productSchema.partial();
-
-export type ProductDTO = z.infer<typeof productSchema>;
-export type UpdateProductPayload = z.infer<typeof UpdateProductSchema>;

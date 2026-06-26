@@ -6,11 +6,11 @@ import { createPaymentRepository } from "../../repositories/payment.repository";
 import { getUserByIdRepository } from "../../repositories/user.repository";
 
 export const midtransService = async (
-  order: any,
+  orderId: string,
   paymentNumber: string,
-  userId: any,
+  userId: string,
 ) => {
-  const existingOrder = await getOrderByIdRepository(order.id);
+  const existingOrder = await getOrderByIdRepository(orderId);
 
   if (!existingOrder) throw new Error("Order not found");
 
@@ -24,7 +24,8 @@ export const midtransService = async (
       gross_amount: Math.round(Number(existingOrder.totalAmount)),
     },
     customer_details: {
-      first_name: users.username,
+      first_name: existingOrder.customerName,
+      last_name: users.username,
     },
     items_details: existingOrder.orderItem.map((item: any) => ({
       id: item.productId,

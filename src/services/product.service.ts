@@ -70,10 +70,7 @@ export const createProductService = async (
     categoryId: category.id,
   });
 
-  return {
-    ...product,
-    price: Number(product.price),
-  };
+  return product;
 };
 
 export const getProductByIdService = async (
@@ -98,7 +95,7 @@ export const updateProductService = async (
     name: payload.name || product.name,
     price: Number(payload.price) || Number(product.price),
     stock: payload.stock || product.stock,
-    categoryId: payload.categoryId || product.categoryId,
+    categoryId: payload.categoryId || product.category.id,
   };
 
   return await updateProductRepository(id, updateProduct);

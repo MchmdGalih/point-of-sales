@@ -26,9 +26,6 @@ export const getAllUserRepository = async (
       omit: {
         password: true,
       },
-      include: {
-        order: true,
-      },
       orderBy: {
         createdAt: "desc",
       },
@@ -94,7 +91,7 @@ export const updateUserRepository = (
       id,
       deletedAt: null,
     },
-    data: payload as object,
+    data: payload,
     omit: {
       password: true,
     },

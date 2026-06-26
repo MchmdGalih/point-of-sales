@@ -6,7 +6,10 @@ export type ProductResponse = {
   price: number;
   sku: string;
   stock: number;
-  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+  };
 };
 
 export type CreateProductRequest = {

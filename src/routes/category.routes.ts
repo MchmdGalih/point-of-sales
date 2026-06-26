@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createCategoryController,
+  deleteCategoryController,
   getAllCategoryController,
   getCategoryByIdController,
   updateCategoryController,
@@ -32,7 +33,7 @@ categoryRoutes.delete(
   "/delete/:id",
   authMiddleware,
   authorizeRole("ADMIN"),
-  updateCategoryController,
+  deleteCategoryController,
 );
 
 export default categoryRoutes;

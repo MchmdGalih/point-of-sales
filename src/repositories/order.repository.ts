@@ -1,6 +1,11 @@
 import type { OrderStatus, Prisma } from "../../generated/prisma/client";
+import { logger } from "../config/logger";
 import { prisma } from "../lib/prisma";
-import type { OrderResponse, RepoQueryOrder } from "../model/order-model";
+import type {
+  OrderDetailResponse,
+  OrderResponse,
+  RepoQueryOrder,
+} from "../model/order-model";
 
 export const getAllOrderRepository = async (
   query: RepoQueryOrder,
@@ -32,6 +37,14 @@ export const getAllOrderRepository = async (
       where,
       skip,
       take,
+      include: {
+        user: {
+          select: { id: true, username: true },
+        },
+        _count: {
+          select: { orderItem: true },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -41,8 +54,17 @@ export const getAllOrderRepository = async (
 
   return {
     orders: orders.map((order) => ({
-      ...order,
+      id: order.id,
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      cashier: {
+        id: order.user?.id as string,
+        username: order.user?.username as string,
+      },
+      status: order.status,
+      itemsCount: order._count.orderItem,
       totalAmount: Number(order.totalAmount),
+      createdAt: order.createdAt,
     })),
     totalData,
   };
@@ -57,11 +79,60 @@ export const createOrderRepository = (
   });
 };
 
-export const getOrderByIdRepository = (id: string) => {
-  return prisma.order.findUnique({
+export const getOrderByIdRepository = async (
+  id: string,
+): Promise<OrderDetailResponse | null> => {
+  const order = await prisma.order.findUnique({
     where: { id, deletedAt: null },
-    include: { orderItem: true, payment: true },
+    include: {
+      user: {
+        select: { id: true, username: true },
+      },
+      orderItem: {
+        include: {
+          product: {
+            select: { name: true },
+          },
+        },
+      },
+      payment: true,
+    },
   });
+
+  if (!order) return null;
+  return {
+    id: order.id,
+    orderNumber: order.orderNumber,
+    status: order.status,
+    totalAmount: order.totalAmount.toNumber(),
+    customerName: order.customerName,
+    cashier: {
+      id: order.user?.id as string,
+      username: order.user?.username as string,
+    },
+    orderItems: order.orderItem.map((item: any) => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      price: item.price,
+      subtotal: item.subtotal,
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+      },
+    })),
+    payment: order.payment
+      ? {
+          id: order.payment.id,
+          paymentNumber: order.payment.paymentNumber,
+          status: order.payment.status,
+          amount: order.payment.amount.toNumber(),
+          paidAt: order.payment.paidAt,
+          method: order.payment.method,
+        }
+      : null,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+  };
 };
 
 export const getOrderByOrderNumberRepository = (orderNumber: string) => {

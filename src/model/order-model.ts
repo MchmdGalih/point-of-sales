@@ -1,13 +1,46 @@
-import type { OrderStatus } from "../../generated/prisma/enums";
+import type {
+  OrderStatus,
+  PaymentMethod,
+  PaymentStatus,
+} from "../../generated/prisma/enums";
 import type { PaginationResponse } from "./paginations";
 
 export type OrderResponse = {
   id: string;
   orderNumber: string;
-  userId: string;
   totalAmount: number;
   customerName?: string | null;
+  cashier: {
+    id: string;
+    username: string;
+  };
   status: OrderStatus;
+  itemsCount: number;
+  createdAt: Date;
+};
+
+export type OrderItems = {
+  productId: string;
+  quantity: number;
+  price: number;
+  product: {
+    id: string;
+    name: string;
+  };
+  subtotal: number;
+};
+
+export type OrderDetailResponse = Omit<OrderResponse, "itemsCount"> & {
+  orderItems: OrderItems[];
+  payment?: {
+    id: string;
+    method: PaymentMethod;
+    status: PaymentStatus;
+    paymentNumber: string;
+    amount: number;
+    paidAt: Date | null;
+  } | null;
+
   createdAt: Date;
   updatedAt: Date;
 };

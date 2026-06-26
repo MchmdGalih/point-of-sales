@@ -29,8 +29,7 @@ export const getAllOrderController = async (
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
-      data: result.data,
-      meta: result.meta,
+      data: result,
     });
   } catch (error) {
     next(error);
@@ -71,7 +70,7 @@ export const getOrderByIdController = async (
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
-      data: result.data,
+      data: result,
     });
   } catch (error) {
     next(error);

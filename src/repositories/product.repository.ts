@@ -41,6 +41,14 @@ export const getAllProductRepository = async (
       where,
       skip,
       take,
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     }),
     prisma.product.count({ where }),
@@ -48,8 +56,15 @@ export const getAllProductRepository = async (
 
   return {
     products: products.map((product) => ({
-      ...product,
+      id: product.id,
+      name: product.name,
+      sku: product.sku,
+      stock: product.stock,
       price: product.price.toNumber(),
+      category: {
+        id: product.category.id,
+        name: product.category.name,
+      },
     })),
     totalData,
   };
@@ -60,11 +75,26 @@ export const createProductRepository = async (
 ): Promise<ProductResponse> => {
   const product = await prisma.product.create({
     data: payload,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
   return {
-    ...product,
+    id: product.id,
+    name: product.name,
+    sku: product.sku,
+    stock: product.stock,
     price: product.price.toNumber(),
+    category: {
+      id: product.category.id,
+      name: product.category.name,
+    },
   };
 };
 
@@ -78,11 +108,26 @@ export const updateProductRepository = async (
       deletedAt: null,
     },
     data: payload,
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
   return {
-    ...product,
+    id: product.id,
+    name: product.name,
+    sku: product.sku,
+    stock: product.stock,
     price: product.price.toNumber(),
+    category: {
+      id: product.category.id,
+      name: product.category.name,
+    },
   };
 };
 
@@ -94,13 +139,28 @@ export const getProductByIdRepository = async (
       id,
       deletedAt: null,
     },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
   if (!product) return null;
 
   return {
-    ...product,
+    id: product.id,
+    name: product.name,
+    sku: product.sku,
+    stock: product.stock,
     price: product.price.toNumber(),
+    category: {
+      id: product.category.id,
+      name: product.category.name,
+    },
   };
 };
 
