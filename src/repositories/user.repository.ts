@@ -98,8 +98,8 @@ export const updateUserRepository = (
   });
 };
 
-export const deleteUserRepository = (id: string): Promise<UserResponse> => {
-  return prisma.user.update({
+export const deleteUserRepository = async (id: string): Promise<void> => {
+  await prisma.user.update({
     where: {
       id,
     },

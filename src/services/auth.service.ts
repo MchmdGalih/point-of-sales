@@ -3,7 +3,10 @@ import {
   logoutRepository,
   registerRepository,
 } from "../repositories/auth.repository";
-import { userFindExistingRepository } from "../repositories/user.repository";
+import {
+  getUserByIdRepository,
+  userFindExistingRepository,
+} from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
 import type {
@@ -63,6 +66,10 @@ export const loginService = async (
   };
 };
 
-export const logoutService = async (id: string): Promise<UserResponse> => {
-  return await logoutRepository(id);
+export const logoutService = async (id: string): Promise<void> => {
+  const user = await getUserByIdRepository(id);
+
+  if (!user) throw new CustomError("User not found", 404);
+
+  await logoutRepository(id);
 };

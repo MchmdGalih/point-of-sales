@@ -101,8 +101,10 @@ export const updateProductService = async (
   return await updateProductRepository(id, updateProduct);
 };
 
-export const deleteProductService = async (
-  id: string,
-): Promise<ProductResponse> => {
-  return await deleteProductRepository(id);
+export const deleteProductService = async (id: string): Promise<void> => {
+  const product = await getProductByIdRepository(id);
+
+  if (!product) throw new CustomError("Product not found", 404);
+
+  await deleteProductRepository(id);
 };

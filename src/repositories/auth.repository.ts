@@ -17,8 +17,8 @@ export const registerRepository = async (
   });
 };
 
-export const logoutRepository = async (id: string): Promise<UserResponse> => {
-  return prisma.user.update({
+export const logoutRepository = async (id: string): Promise<void> => {
+  await prisma.user.update({
     where: {
       id,
       deletedAt: null,

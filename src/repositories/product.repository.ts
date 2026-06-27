@@ -164,8 +164,8 @@ export const getProductByIdRepository = async (
   };
 };
 
-export const deleteProductRepository = (id: string): Promise<any> => {
-  return prisma.product.update({
+export const deleteProductRepository = async (id: string): Promise<void> => {
+  await prisma.product.update({
     where: { id },
     data: { deletedAt: new Date() },
   });

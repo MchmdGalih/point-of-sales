@@ -84,6 +84,10 @@ export const updateUserService = async (
   return await updateUserRepository(id, data);
 };
 
-export const deleteUserService = async (id: string): Promise<UserResponse> => {
-  return await deleteUserRepository(id);
+export const deleteUserService = async (id: string): Promise<void> => {
+  const user = await getUserByIdRepository(id);
+
+  if (!user) throw new CustomError("User not found", 404);
+
+  await deleteUserRepository(id);
 };

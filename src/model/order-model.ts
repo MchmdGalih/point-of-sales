@@ -19,17 +19,22 @@ export type OrderResponse = {
   createdAt: Date;
 };
 
+export interface ItemOrder {
+  productId: string;
+  quantity: number;
+}
+
 export type OrderItems = {
   productId: string;
   quantity: number;
   price: number;
-  product: {
-    id: string;
-    name: string;
-  };
+  productName: string;
   subtotal: number;
 };
 
+export type CreateOrderResponse = Omit<OrderResponse, "itemsCount"> & {
+  items: Omit<OrderItems, "product">[];
+};
 export type OrderDetailResponse = Omit<OrderResponse, "itemsCount"> & {
   orderItems: OrderItems[];
   payment?: {

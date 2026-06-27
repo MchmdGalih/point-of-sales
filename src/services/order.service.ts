@@ -1,6 +1,11 @@
 import { logger } from "../config/logger";
 import { CustomError } from "../errors/customError";
-import type { OrderItems, OrderQueryRequest } from "../model/order-model";
+import type {
+  CreateOrderResponse,
+  ItemOrder,
+  OrderDetailResponse,
+  OrderQueryRequest,
+} from "../model/order-model";
 import {
   createOrderRepository,
   deleteOrderRepository,
@@ -39,20 +44,19 @@ export const getAllOrderService = async (query: OrderQueryRequest) => {
 export const createOrderService = async (
   userId: string,
   payload: CreateOrderPayload,
-) => {
+): Promise<CreateOrderResponse> => {
   const { orderItems, customerName } = payload;
 
-  const productIds = orderItems.map((item: any) => item.productId);
+  const productIds = orderItems.map((item: ItemOrder) => item.productId);
 
   const products = await getProductByIdsRepository(productIds);
-
   if (products.length !== productIds.length) {
     throw new CustomError("One or more product", 404);
   }
 
   let totalAmount = 0;
 
-  const orderItemDatas = orderItems.map((item: any) => {
+  const orderItemDatas = orderItems.map((item: ItemOrder) => {
     const product = products.find((p) => p.id === item.productId);
 
     if (!product) {
@@ -68,6 +72,7 @@ export const createOrderService = async (
 
     return {
       productId: product.id,
+      productName: product.name,
       quantity: item.quantity,
       price: Number(product.price),
       subtotal,
@@ -88,12 +93,14 @@ export const createOrderService = async (
     orderItem: { create: orderItemDatas },
   });
 
-  return {
-    data: order,
-  };
+  logger.info("order", order);
+
+  return order;
 };
 
-export const getOrderByIdService = async (id: string) => {
+export const getOrderByIdService = async (
+  id: string,
+): Promise<OrderDetailResponse> => {
   const order = await getOrderByIdRepository(id);
 
   if (!order) throw new CustomError("Order not found", 404);
@@ -101,6 +108,6 @@ export const getOrderByIdService = async (id: string) => {
   return order;
 };
 
-export const deleteOrderService = async (id: string) => {
+export const deleteOrderService = async (id: string): Promise<void> => {
   return await deleteOrderRepository(id);
 };

@@ -1,8 +1,13 @@
-import type { OrderStatus, Prisma } from "../../generated/prisma/client";
-import { logger } from "../config/logger";
+import type {
+  OrderItem,
+  OrderStatus,
+  Prisma,
+} from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type {
+  CreateOrderResponse,
   OrderDetailResponse,
+  OrderItems,
   OrderResponse,
   RepoQueryOrder,
 } from "../model/order-model";
@@ -63,20 +68,45 @@ export const getAllOrderRepository = async (
       },
       status: order.status,
       itemsCount: order._count.orderItem,
-      totalAmount: Number(order.totalAmount),
+      totalAmount: order.totalAmount.toNumber(),
       createdAt: order.createdAt,
     })),
     totalData,
   };
 };
 
-export const createOrderRepository = (
+export const createOrderRepository = async (
   payload: Prisma.OrderUncheckedCreateInput,
-) => {
-  return prisma.order.create({
+): Promise<CreateOrderResponse> => {
+  const newOrder = await prisma.order.create({
     data: payload,
-    include: { orderItem: true },
+    include: {
+      orderItem: true,
+      user: {
+        select: { id: true, username: true },
+      },
+    },
   });
+
+  return {
+    id: newOrder.id,
+    orderNumber: newOrder.orderNumber,
+    status: newOrder.status,
+    totalAmount: newOrder.totalAmount.toNumber(),
+    customerName: newOrder.customerName,
+    cashier: {
+      id: newOrder.user?.id as string,
+      username: newOrder.user?.username as string,
+    },
+    items: newOrder.orderItem.map((item: OrderItem) => ({
+      productId: item.productId,
+      productName: item.productName,
+      quantity: item.quantity,
+      price: item.price.toNumber(),
+      subtotal: item.subtotal.toNumber(),
+    })),
+    createdAt: newOrder.createdAt,
+  };
 };
 
 export const getOrderByIdRepository = async (
@@ -100,6 +130,7 @@ export const getOrderByIdRepository = async (
   });
 
   if (!order) return null;
+
   return {
     id: order.id,
     orderNumber: order.orderNumber,
@@ -110,15 +141,12 @@ export const getOrderByIdRepository = async (
       id: order.user?.id as string,
       username: order.user?.username as string,
     },
-    orderItems: order.orderItem.map((item: any) => ({
-      productId: item.product.id,
+    orderItems: order.orderItem.map((item: OrderItem) => ({
+      productId: item.productId,
+      productName: item.productName,
       quantity: item.quantity,
-      price: item.price,
-      subtotal: item.subtotal,
-      product: {
-        id: item.product.id,
-        name: item.product.name,
-      },
+      price: item.price.toNumber(),
+      subtotal: item.subtotal.toNumber(),
     })),
     payment: order.payment
       ? {
@@ -153,7 +181,7 @@ export const updateOrderStatusRepository = (
   });
 };
 
-export const deleteOrderRepository = (id: string) => {
+export const deleteOrderRepository = (id: string): Promise<any> => {
   return prisma.order.update({
     where: {
       id,

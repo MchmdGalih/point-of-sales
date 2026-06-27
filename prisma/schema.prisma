@@ -101,7 +101,7 @@ model OrderItem {
   quantity Int
   subtotal Decimal
   price Decimal
-
+  productName String
   productId String
   orderId String
 

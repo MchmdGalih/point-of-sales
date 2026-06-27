@@ -52,10 +52,10 @@ export const createOrderController = async (
     res.status(201).json({
       status: "success",
       message: "Order created successfully",
-      data: result.data,
+      data: result,
     });
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };
 

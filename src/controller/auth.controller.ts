@@ -4,6 +4,7 @@ import {
   logoutService,
   registerService,
 } from "../services/auth.service";
+import { logger } from "../config/logger";
 
 export const registerController = async (
   req: Request,
@@ -53,6 +54,6 @@ export const logoutController = async (
       message: "User logged out successfully",
     });
   } catch (error) {
-    next(error);
+    logger.error(error);
   }
 };

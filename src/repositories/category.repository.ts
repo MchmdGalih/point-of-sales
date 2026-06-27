@@ -40,10 +40,8 @@ export const updateCategoryRepository = (
   });
 };
 
-export const deleteCategoryRepository = (
-  id: string,
-): Promise<CategoryResponse> => {
-  return prisma.category.update({
+export const deleteCategoryRepository = async (id: string): Promise<void> => {
+  await prisma.category.update({
     where: {
       id,
     },

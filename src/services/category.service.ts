@@ -38,8 +38,10 @@ export const updateCategoryService = async (
   return await updateCategoryRepository(id, name);
 };
 
-export const deleteCategoryService = async (
-  id: string,
-): Promise<CategoryResponse> => {
-  return await deleteCategoryRepository(id);
+export const deleteCategoryService = async (id: string): Promise<void> => {
+  const category = await getCategoryByIdRepository(id);
+
+  if (!category) throw new CustomError("Category not found", 404);
+
+  await deleteCategoryRepository(id);
 };
