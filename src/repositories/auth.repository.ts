@@ -1,10 +1,7 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { UserResponse } from "../model/user-model";
 
-export const registerRepository = async (
-  payload: Prisma.UserCreateInput,
-): Promise<UserResponse> => {
+export const registerRepository = async (payload: Prisma.UserCreateInput) => {
   return await prisma.user.create({
     data: payload,
     select: {
@@ -17,7 +14,7 @@ export const registerRepository = async (
   });
 };
 
-export const logoutRepository = async (id: string): Promise<void> => {
+export const logoutRepository = async (id: string) => {
   await prisma.user.update({
     where: {
       id,

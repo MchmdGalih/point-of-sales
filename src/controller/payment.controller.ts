@@ -48,8 +48,10 @@ export const createPaymentController = async (
   try {
     const { orderId, method } = req.body;
 
+    console.log(orderId, "orderId");
+
     const result = await createPaymentService(
-      orderId,
+      orderId as string,
       method,
       req.user?.id as string,
     );
@@ -58,6 +60,6 @@ export const createPaymentController = async (
       data: result,
     });
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };

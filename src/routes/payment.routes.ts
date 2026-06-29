@@ -17,7 +17,14 @@ paymentRoutes.get(
   getAllPaymentController,
 );
 paymentRoutes.post(
-  "/",
+  "/cash",
+  authMiddleware,
+  validate(paymentSchema),
+  createPaymentController,
+);
+
+paymentRoutes.post(
+  "/midtrans",
   authMiddleware,
   validate(paymentSchema),
   createPaymentController,

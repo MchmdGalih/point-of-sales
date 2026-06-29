@@ -4,21 +4,17 @@ import type {
   CreateCategoryRequest,
 } from "../model/category-model";
 
-export const getAllCategoryRepository = (): Promise<CategoryResponse[]> => {
+export const getAllCategoryRepository = () => {
   return prisma.category.findMany({
     where: { deletedAt: null },
   });
 };
 
-export const createCategoryRepository = (
-  name: CreateCategoryRequest,
-): Promise<CategoryResponse> => {
+export const createCategoryRepository = (name: CreateCategoryRequest) => {
   return prisma.category.create({ data: name });
 };
 
-export const getCategoryByIdRepository = (
-  id: string,
-): Promise<CategoryResponse | null> => {
+export const getCategoryByIdRepository = (id: string) => {
   return prisma.category.findUnique({
     where: {
       id,
@@ -30,7 +26,7 @@ export const getCategoryByIdRepository = (
 export const updateCategoryRepository = (
   id: string,
   name: CreateCategoryRequest,
-): Promise<CategoryResponse> => {
+) => {
   return prisma.category.update({
     where: {
       id,
@@ -40,7 +36,7 @@ export const updateCategoryRepository = (
   });
 };
 
-export const deleteCategoryRepository = async (id: string): Promise<void> => {
+export const deleteCategoryRepository = async (id: string) => {
   await prisma.category.update({
     where: {
       id,

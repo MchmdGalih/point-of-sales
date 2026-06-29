@@ -3,6 +3,7 @@ import { CustomError } from "../errors/customError";
 import type {
   CreateOrderResponse,
   ItemOrder,
+  ListOrderResponse,
   OrderDetailResponse,
   OrderQueryRequest,
 } from "../model/order-model";
@@ -14,10 +15,17 @@ import {
 } from "../repositories/order.repository";
 import { getProductByIdsRepository } from "../repositories/product.repository";
 import { getUserByIdRepository } from "../repositories/user.repository";
+import {
+  serializeCreateOrder,
+  serializeOrderDetail,
+  serializeOrders,
+} from "../utils/formatter/order";
 import { generateCode } from "../utils/generate-code";
 import type { CreateOrderPayload } from "../validations/order.validation";
 
-export const getAllOrderService = async (query: OrderQueryRequest) => {
+export const getAllOrderService = async (
+  query: OrderQueryRequest,
+): Promise<ListOrderResponse> => {
   const { page = 1, limit = 10, search, status, orderNumber } = query;
 
   const skip = (page - 1) * limit;
@@ -31,7 +39,7 @@ export const getAllOrderService = async (query: OrderQueryRequest) => {
   });
 
   return {
-    orders,
+    data: serializeOrders(orders),
     meta: {
       page,
       limit,
@@ -93,9 +101,7 @@ export const createOrderService = async (
     orderItem: { create: orderItemDatas },
   });
 
-  logger.info("order", order);
-
-  return order;
+  return serializeCreateOrder(order);
 };
 
 export const getOrderByIdService = async (
@@ -105,7 +111,7 @@ export const getOrderByIdService = async (
 
   if (!order) throw new CustomError("Order not found", 404);
 
-  return order;
+  return serializeOrderDetail(order);
 };
 
 export const deleteOrderService = async (id: string): Promise<void> => {

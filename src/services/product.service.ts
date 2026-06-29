@@ -14,6 +14,10 @@ import {
   getProductByIdRepository,
   updateProductRepository,
 } from "../repositories/product.repository";
+import {
+  serializeProduct,
+  serializeProducts,
+} from "../utils/formatter/product";
 import { generateCode } from "../utils/generate-code";
 
 export const getAllProductService = async (
@@ -30,7 +34,7 @@ export const getAllProductService = async (
   } = query;
   const skip = (page - 1) * limit;
 
-  const result = await getAllProductRepository({
+  const { products, totalData } = await getAllProductRepository({
     skip,
     take: limit,
     ...(search && { search }),
@@ -41,12 +45,12 @@ export const getAllProductService = async (
   });
 
   return {
-    data: result.products,
+    data: serializeProducts(products),
     meta: {
       page,
       limit,
-      totalPage: Math.ceil(result.totalData / limit),
-      totalData: result.totalData,
+      totalData,
+      totalPage: Math.ceil(totalData / limit),
     },
   };
 };
@@ -70,17 +74,17 @@ export const createProductService = async (
     categoryId: category.id,
   });
 
-  return product;
+  return serializeProduct(product);
 };
 
 export const getProductByIdService = async (
   id: string,
-): Promise<ProductResponse> => {
+): Promise<ProductResponse | null> => {
   const product = await getProductByIdRepository(id);
 
   if (!product) throw new CustomError("Product not found", 404);
 
-  return product;
+  return serializeProduct(product);
 };
 
 export const updateProductService = async (
@@ -98,7 +102,9 @@ export const updateProductService = async (
     categoryId: payload.categoryId || product.category.id,
   };
 
-  return await updateProductRepository(id, updateProduct);
+  const updatedProduct = await updateProductRepository(id, updateProduct);
+
+  return serializeProduct(updatedProduct);
 };
 
 export const deleteProductService = async (id: string): Promise<void> => {

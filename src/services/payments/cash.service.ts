@@ -4,8 +4,8 @@ import {
   PaymentStatus,
 } from "../../../generated/prisma/enums";
 import { logger } from "../../config/logger";
+import { CustomError } from "../../errors/customError";
 import { prisma } from "../../lib/prisma";
-import type { CreatePaymentResponse } from "../../model/payment-model";
 import {
   getOrderByIdRepository,
   updateOrderStatusRepository,
@@ -16,14 +16,13 @@ import {
 } from "../../repositories/payment.repository";
 import { decrementProductRepository } from "../../repositories/product.repository";
 
-export const cashService = async (
-  orderId: string,
-  paymentNumber: string,
-  userId: string,
-): Promise<void> => {
+export const cashService = async (orderId: string, paymentNumber: string) => {
   const existingOrder = await getOrderByIdRepository(orderId);
 
-  if (!existingOrder) throw new Error("Order not found");
+  if (!existingOrder) throw new CustomError("Order not found", 404);
+
+  if (existingOrder.status === OrderStatus.COMPLETED)
+    throw new CustomError("Order already completed", 400);
 
   await prisma.$transaction(async (tx) => {
     await createPaymentRepository({
@@ -48,16 +47,12 @@ export const cashService = async (
 
     logger.info("Payment status updated successfully");
 
-    if (PaymentStatus.PAID === PaymentStatus.PAID) {
-      await Promise.all(
-        existingOrder.orderItems.map((item) => {
-          console.log(item);
-          decrementProductRepository(tx, item.productId, item.quantity);
-        }),
-      );
-
-      logger.info("Product stock updated successfully");
-    }
+    await Promise.all(
+      existingOrder.orderItem.map((item) =>
+        decrementProductRepository(tx, item.productId, item.quantity),
+      ),
+    );
+    logger.info("Product stock updated successfully");
   });
 
   logger.info("Transaction completed successfully");

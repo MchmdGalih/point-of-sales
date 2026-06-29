@@ -27,7 +27,7 @@ export const midtransService = async (
       first_name: existingOrder.customerName,
       last_name: users.username,
     },
-    items_details: existingOrder.orderItems.map((item: any) => ({
+    items_details: existingOrder.orderItem.map((item: any) => ({
       id: item.productId,
       price: Number(item.price),
       quantity: item.quantity,

@@ -1,9 +1,6 @@
-import type {
-  OrderStatus,
-  PaymentMethod,
-  PaymentStatus,
-} from "../../generated/prisma/enums";
+import type { OrderStatus } from "../../generated/prisma/enums";
 import type { PaginationResponse } from "./paginations";
+import type { PaymentResponse } from "./payment-model";
 
 export type OrderResponse = {
   id: string;
@@ -37,15 +34,7 @@ export type CreateOrderResponse = Omit<OrderResponse, "itemsCount"> & {
 };
 export type OrderDetailResponse = Omit<OrderResponse, "itemsCount"> & {
   orderItems: OrderItems[];
-  payment?: {
-    id: string;
-    method: PaymentMethod;
-    status: PaymentStatus;
-    paymentNumber: string;
-    amount: number;
-    paidAt: Date | null;
-  } | null;
-
+  payment?: PaymentResponse | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -63,4 +52,4 @@ export type RepoQueryOrder = OrderQueryRequest & {
   skip: number;
 };
 
-export type ListOrder = PaginationResponse<OrderResponse>;
+export type ListOrderResponse = PaginationResponse<OrderResponse>;

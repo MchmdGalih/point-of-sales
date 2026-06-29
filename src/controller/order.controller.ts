@@ -29,7 +29,8 @@ export const getAllOrderController = async (
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   } catch (error) {
     next(error);
@@ -55,7 +56,7 @@ export const createOrderController = async (
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 

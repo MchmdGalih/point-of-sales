@@ -3,13 +3,10 @@ import { prisma } from "../lib/prisma";
 import type {
   CreateProductRequest,
   ProductQueryRepo,
-  ProductResponse,
   UpdateProductRequest,
 } from "../model/product-model";
 
-export const getAllProductRepository = async (
-  query: ProductQueryRepo,
-): Promise<{ products: ProductResponse[]; totalData: number }> => {
+export const getAllProductRepository = async (query: ProductQueryRepo) => {
   const { skip, take, search, minPrice, maxPrice, inStock, categoryId } = query;
 
   const where = {
@@ -54,26 +51,13 @@ export const getAllProductRepository = async (
     prisma.product.count({ where }),
   ]);
 
-  return {
-    products: products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      sku: product.sku,
-      stock: product.stock,
-      price: product.price.toNumber(),
-      category: {
-        id: product.category.id,
-        name: product.category.name,
-      },
-    })),
-    totalData,
-  };
+  return { products, totalData };
 };
 
 export const createProductRepository = async (
   payload: CreateProductRequest,
-): Promise<ProductResponse> => {
-  const product = await prisma.product.create({
+) => {
+  return await prisma.product.create({
     data: payload,
     include: {
       category: {
@@ -84,25 +68,13 @@ export const createProductRepository = async (
       },
     },
   });
-
-  return {
-    id: product.id,
-    name: product.name,
-    sku: product.sku,
-    stock: product.stock,
-    price: product.price.toNumber(),
-    category: {
-      id: product.category.id,
-      name: product.category.name,
-    },
-  };
 };
 
 export const updateProductRepository = async (
   id: string,
   payload: UpdateProductRequest,
-): Promise<ProductResponse> => {
-  const product = await prisma.product.update({
+) => {
+  return await prisma.product.update({
     where: {
       id,
       deletedAt: null,
@@ -117,24 +89,10 @@ export const updateProductRepository = async (
       },
     },
   });
-
-  return {
-    id: product.id,
-    name: product.name,
-    sku: product.sku,
-    stock: product.stock,
-    price: product.price.toNumber(),
-    category: {
-      id: product.category.id,
-      name: product.category.name,
-    },
-  };
 };
 
-export const getProductByIdRepository = async (
-  id: string,
-): Promise<ProductResponse | null> => {
-  const product = await prisma.product.findUnique({
+export const getProductByIdRepository = async (id: string) => {
+  return await prisma.product.findUnique({
     where: {
       id,
       deletedAt: null,
@@ -148,23 +106,9 @@ export const getProductByIdRepository = async (
       },
     },
   });
-
-  if (!product) return null;
-
-  return {
-    id: product.id,
-    name: product.name,
-    sku: product.sku,
-    stock: product.stock,
-    price: product.price.toNumber(),
-    category: {
-      id: product.category.id,
-      name: product.category.name,
-    },
-  };
 };
 
-export const deleteProductRepository = async (id: string): Promise<void> => {
+export const deleteProductRepository = async (id: string) => {
   await prisma.product.update({
     where: { id },
     data: { deletedAt: new Date() },
