@@ -1,6 +1,9 @@
 import { PaymentMethod } from "../../../generated/prisma/enums";
 import { CustomError } from "../../errors/customError";
-import { getAllPaymentRepository } from "../../repositories/payment.repository";
+import {
+  getAllPaymentRepository,
+  getPaymentByIdRepository,
+} from "../../repositories/payment.repository";
 import { generateCode } from "../../utils/generate-code";
 import type {
   CreatePaymentResponse,
@@ -9,6 +12,10 @@ import type {
 } from "../../model/payment-model";
 import { cashService } from "./cash.service";
 import { midtransService } from "./midtrans.service";
+import {
+  serializePaymentDetail,
+  serializePaymentList,
+} from "../../utils/formatter/payment";
 
 export const getAllPaymentService = async (
   query: PaymentQueryRequest,
@@ -33,7 +40,7 @@ export const getAllPaymentService = async (
   });
 
   return {
-    data: result.payments,
+    data: serializePaymentList(result.payments),
     meta: {
       page,
       limit,
@@ -46,15 +53,24 @@ export const getAllPaymentService = async (
 export const createPaymentService = async (
   orderId: string,
   method: PaymentMethod,
+  amount: number,
   userId: string,
 ): Promise<CreatePaymentResponse> => {
   const paymentNumber: string = await generateCode("PAY");
 
   if (method === PaymentMethod.CASH)
-    return await cashService(orderId, paymentNumber);
+    return await cashService(orderId, paymentNumber, amount);
 
   if (method === PaymentMethod.MIDTRANS)
     return await midtransService(orderId, paymentNumber, userId);
 
   throw new CustomError("Payment method not found", 404);
+};
+
+export const getPaymentByIdService = async (id: string) => {
+  const payment = await getPaymentByIdRepository(id);
+
+  if (!payment) throw new CustomError("Payment not found", 404);
+
+  return serializePaymentDetail(payment);
 };

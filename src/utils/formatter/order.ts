@@ -35,7 +35,7 @@ export const serializeCreateOrder = (order: any): CreateOrderResponse => {
   };
 };
 
-export const seriaizeOrderItems = (item: any): OrderItems => ({
+export const serializeOrderItems = (item: any): OrderItems => ({
   productId: item.productId,
   quantity: item.quantity,
   price: Number(item.price),
@@ -47,7 +47,7 @@ export const serializeOrderDetail = (order: any): OrderDetailResponse => {
   const { itemsCount, ...withoutCount } = serializeOrder(order);
   return {
     ...withoutCount,
-    orderItems: order.orderItem.map(seriaizeOrderItems),
+    orderItems: order.orderItem.map(serializeOrderItems),
     payment: order.payment ? serializePayment(order.payment) : null,
     updatedAt: order.updatedAt,
     createdAt: order.createdAt,

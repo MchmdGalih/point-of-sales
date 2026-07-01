@@ -1,6 +1,7 @@
 import { PaymentMethod, PaymentStatus } from "../../../generated/prisma/enums";
 import { snap } from "../../config/midtrans";
 import { CustomError } from "../../errors/customError";
+import type { MidtransPaymentResponse } from "../../model/payment-model";
 import { getOrderByIdRepository } from "../../repositories/order.repository";
 import { createPaymentRepository } from "../../repositories/payment.repository";
 import { getUserByIdRepository } from "../../repositories/user.repository";
@@ -9,7 +10,7 @@ export const midtransService = async (
   orderId: string,
   paymentNumber: string,
   userId: string,
-) => {
+): Promise<MidtransPaymentResponse> => {
   const existingOrder = await getOrderByIdRepository(orderId);
 
   if (!existingOrder) throw new Error("Order not found");
@@ -43,6 +44,7 @@ export const midtransService = async (
     snapToken: midtransResponse.token,
     paymentNumber,
     amount: Number(existingOrder.totalAmount),
+    change: null,
     method: PaymentMethod.MIDTRANS,
   });
 

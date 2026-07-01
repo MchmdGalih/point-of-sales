@@ -4,11 +4,9 @@ import type {
   Prisma,
 } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { PaymentResponse, RepoQueryPayment } from "../model/payment-model";
+import type { RepoQueryPayment } from "../model/payment-model";
 
-export const getAllPaymentRepository = async (
-  query: RepoQueryPayment,
-): Promise<{ payments: PaymentResponse[]; totalData: number }> => {
+export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
   const { skip, paymentNumber, take, method, status, orderId } = query;
 
   const where = {
@@ -34,22 +32,34 @@ export const getAllPaymentRepository = async (
     prisma.payment.count({ where }),
   ]);
   return {
-    payments: payments.map((payment) => ({
-      ...payment,
-      amount: payment.amount.toNumber(),
-    })),
+    payments,
     totalData,
   };
 };
 
-export const createPaymentRepository = async (
+export const createPaymentRepository = (
   payload: Prisma.PaymentUncheckedCreateInput,
-): Promise<PaymentResponse> => {
-  const payment = await prisma.payment.create({ data: payload });
-  return {
-    ...payment,
-    amount: payment.amount.toNumber(),
-  };
+) => {
+  return prisma.payment.create({ data: payload });
+};
+
+export const getPaymentByIdRepository = (id: string) => {
+  return prisma.payment.findUnique({
+    where: { id },
+    include: {
+      order: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          orderItem: true,
+        },
+      },
+    },
+  });
 };
 
 export const updatePaymentByOrderIdRepository = (

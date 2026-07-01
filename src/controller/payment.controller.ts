@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import {
   createPaymentService,
   getAllPaymentService,
+  getPaymentByIdService,
 } from "../services/payments/payment.service";
 import type {
   PaymentMethod,
@@ -46,20 +47,40 @@ export const createPaymentController = async (
   next: NextFunction,
 ) => {
   try {
-    const { orderId, method } = req.body;
-
-    console.log(orderId, "orderId");
+    const { orderId } = req.params;
+    const { method, amount } = req.body;
 
     const result = await createPaymentService(
       orderId as string,
       method,
+      amount,
       req.user?.id as string,
     );
     res.status(200).json({
       status: "success",
+      message: "Payment created successfully",
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+export const getPaymentByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const result = await getPaymentByIdService(id as string);
+
+    res.status(200).json({
+      status: "success",
+      message: "Detail payment fetched successfully",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
   }
 };

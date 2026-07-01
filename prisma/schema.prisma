@@ -118,6 +118,7 @@ model Payment {
   id String @id @default(uuid())
   paymentNumber String @unique
   amount Decimal
+  change Decimal?
   method PaymentMethod
   status PaymentStatus @default(PENDING)
   provider String?

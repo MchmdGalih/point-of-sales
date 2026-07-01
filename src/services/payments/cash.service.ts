@@ -6,6 +6,7 @@ import {
 import { logger } from "../../config/logger";
 import { CustomError } from "../../errors/customError";
 import { prisma } from "../../lib/prisma";
+import type { CashPaymentResponse } from "../../model/payment-model";
 import {
   getOrderByIdRepository,
   updateOrderStatusRepository,
@@ -16,7 +17,11 @@ import {
 } from "../../repositories/payment.repository";
 import { decrementProductRepository } from "../../repositories/product.repository";
 
-export const cashService = async (orderId: string, paymentNumber: string) => {
+export const cashService = async (
+  orderId: string,
+  paymentNumber: string,
+  amount: number,
+): Promise<CashPaymentResponse> => {
   const existingOrder = await getOrderByIdRepository(orderId);
 
   if (!existingOrder) throw new CustomError("Order not found", 404);
@@ -24,12 +29,20 @@ export const cashService = async (orderId: string, paymentNumber: string) => {
   if (existingOrder.status === OrderStatus.COMPLETED)
     throw new CustomError("Order already completed", 400);
 
+  if (amount < Number(existingOrder.totalAmount))
+    throw new CustomError("Insufficient amount", 400);
+
+  const change = amount - Number(existingOrder.totalAmount);
+
+  let payment: any;
+
   await prisma.$transaction(async (tx) => {
     await createPaymentRepository({
       orderId: existingOrder.id,
       status: PaymentStatus.PAID,
       paymentNumber,
-      amount: Number(existingOrder.totalAmount),
+      amount,
+      change,
       method: PaymentMethod.CASH,
     });
 
@@ -56,4 +69,6 @@ export const cashService = async (orderId: string, paymentNumber: string) => {
   });
 
   logger.info("Transaction completed successfully");
+
+  console.log(payment);
 };

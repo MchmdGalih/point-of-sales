@@ -10,7 +10,9 @@ import { decrementProductRepository } from "../repositories/product.repository";
 import { handleMapStatus } from "../utils/map-handle-status";
 import { verifyMidtransSignature } from "../utils/verify-midtrans-signature";
 
-export const handleMidtransNotificationService = async (notification: any) => {
+export const handleMidtransNotificationService = async (
+  notification: any,
+): Promise<void> => {
   const {
     order_id: orderNumber,
     transaction_status,
@@ -32,15 +34,10 @@ export const handleMidtransNotificationService = async (notification: any) => {
 
   const order = await getOrderByOrderNumberRepository(orderNumber as string);
 
-  if (!order) {
-    return {
-      message: "ignored- order not found",
-    };
-  }
+  if (!order) throw new CustomError("Order not found", 404);
 
-  if (order.payment?.status === PaymentStatus.PAID) {
-    return { message: "already processed" };
-  }
+  if (order.payment?.status === PaymentStatus.PAID)
+    throw new CustomError("Order already paid", 400);
 
   const { orderStatus, paymentStatus } = handleMapStatus(transaction_status);
 
@@ -62,9 +59,4 @@ export const handleMidtransNotificationService = async (notification: any) => {
       );
     }
   });
-
-  return {
-    orderStatus,
-    paymentStatus,
-  };
 };

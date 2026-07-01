@@ -2,6 +2,7 @@ import type {
   PaymentMethod,
   PaymentStatus,
 } from "../../generated/prisma/enums";
+import type { OrderItems } from "./order-model";
 import type { PaginationResponse } from "./paginations";
 
 export type PaymentResponse = {
@@ -18,10 +19,35 @@ export type PaymentResponse = {
   paidAt?: Date | null;
 };
 
-export type CreatePaymentResponse = {
-  snapToken: string | null;
-  redirectUrl: string | null;
+export type CashPaymentResponse = {
+  id: string;
+  paymentNumber: string;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  amount: number;
+  change: number;
+  paidAt: Date;
+  order: {
+    id: string;
+    orderNumber: string;
+    totalAmount: number;
+    customerName: string;
+    cashier: {
+      id: string;
+      username: string;
+    };
+    orderItems: OrderItems[];
+  };
 };
+
+export type MidtransPaymentResponse = {
+  snapToken: string;
+  redirectUrl: string;
+};
+
+export type CreatePaymentResponse =
+  | CashPaymentResponse
+  | MidtransPaymentResponse;
 
 export type PaymentQueryRequest = {
   page?: number;
@@ -30,6 +56,37 @@ export type PaymentQueryRequest = {
   status?: PaymentStatus;
   orderId?: string;
   method?: PaymentMethod;
+};
+
+export type PaymentDetailResponse = {
+  id: string;
+  paymentNumber: string;
+  method: PaymentMethod;
+  status: PaymentStatus;
+  amount: number;
+  paidAt: Date;
+  provider?: string | null;
+  snapToken?: string | null;
+  providerTransactionId?: string | null;
+  order: {
+    id: string;
+    orderNumber: string;
+    totalAmount: number;
+    customerName: string;
+    cashier: {
+      id: string;
+      username: string;
+    };
+  };
+  orderItems: [
+    {
+      productId: string;
+      productName: string;
+      quantity: number;
+      price: number;
+      subtotal: number;
+    },
+  ];
 };
 
 export type RepoQueryPayment = PaymentQueryRequest & {
