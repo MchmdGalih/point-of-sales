@@ -10,8 +10,12 @@ import { authMiddleware } from "../middleware/authMiddleware";
 
 const authRoutes = Router();
 
-authRoutes.post("/register", validate(registerSchema), registerController);
-authRoutes.post("/login", validate(loginSchema), loginController);
+authRoutes.post(
+  "/register",
+  validate(registerSchema, "body"),
+  registerController,
+);
+authRoutes.post("/login", validate(loginSchema, "body"), loginController);
 authRoutes.post("/logout", authMiddleware, logoutController);
 
 export default authRoutes;

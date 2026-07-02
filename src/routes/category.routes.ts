@@ -18,13 +18,14 @@ categoryRoutes.post(
   "/create",
   authMiddleware,
   authorizeRole("ADMIN"),
-  validate(categorySchema),
+  validate(categorySchema, "body"),
   createCategoryController,
 );
 
 categoryRoutes.get("/:id", getCategoryByIdController);
 categoryRoutes.put(
   "/edit/:id",
+  validate(categorySchema, "body"),
   authMiddleware,
   authorizeRole("ADMIN"),
   updateCategoryController,

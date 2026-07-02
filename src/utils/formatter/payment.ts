@@ -3,7 +3,7 @@ import type {
   PaymentDetailResponse,
   PaymentResponse,
 } from "../../model/payment-model";
-import { serializeOrder, serializeOrderItems } from "./order";
+import { serializeOrderItems } from "./order";
 
 export const serializePayment = (payment: any): PaymentResponse => ({
   id: payment.id,
@@ -13,6 +13,7 @@ export const serializePayment = (payment: any): PaymentResponse => ({
   provider: payment.provider ?? null,
   paymentNumber: payment.paymentNumber,
   amount: Number(payment.amount),
+  change: Number(payment.change),
   providerTransactionId: payment.providerTransactionId ?? null,
   providerPaymentType: payment.providerPaymentType ?? null,
   snapToken: payment.snapToken ?? null,
@@ -44,6 +45,19 @@ export const serializePaymentDetail = (payment: any): PaymentDetailResponse => {
 export const serializeCashPayment = (
   payment: any,
   order: any,
-): CashPaymentResponse => ({
-  ...serializePayment(payment),
-});
+): CashPaymentResponse => {
+  return {
+    ...serializePayment(payment),
+    order: {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      totalAmount: Number(order.totalAmount),
+      customerName: order.customerName,
+      cashier: {
+        id: order.user.id,
+        username: order.user.username,
+      },
+      orderItems: order.orderItem.map(serializeOrderItems),
+    },
+  };
+};

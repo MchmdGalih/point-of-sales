@@ -1,3 +1,4 @@
+import { serialize } from "node:v8";
 import {
   OrderStatus,
   PaymentMethod,
@@ -16,6 +17,8 @@ import {
   updatePaymentByOrderIdRepository,
 } from "../../repositories/payment.repository";
 import { decrementProductRepository } from "../../repositories/product.repository";
+import { serializeCashPayment } from "../../utils/formatter/payment";
+import type { Payment } from "../../../generated/prisma/client";
 
 export const cashService = async (
   orderId: string,
@@ -34,16 +37,15 @@ export const cashService = async (
 
   const change = amount - Number(existingOrder.totalAmount);
 
-  let payment: any;
-
-  await prisma.$transaction(async (tx) => {
-    await createPaymentRepository({
+  const payment = await prisma.$transaction(async (tx) => {
+    const payment = await createPaymentRepository({
       orderId: existingOrder.id,
       status: PaymentStatus.PAID,
       paymentNumber,
       amount,
       change,
       method: PaymentMethod.CASH,
+      paidAt: new Date(),
     });
 
     logger.info("Payment created successfully");
@@ -66,9 +68,11 @@ export const cashService = async (
       ),
     );
     logger.info("Product stock updated successfully");
+
+    return payment;
   });
 
   logger.info("Transaction completed successfully");
 
-  console.log(payment);
+  return serializeCashPayment(payment, existingOrder);
 };

@@ -13,10 +13,11 @@ export type PaymentResponse = {
   provider?: string | null;
   paymentNumber: string;
   amount: number;
+  change?: number | null;
   providerTransactionId?: string | null;
   providerPaymentType?: string | null;
   snapToken: string | null;
-  paidAt?: Date | null;
+  paidAt: Date;
 };
 
 export type CashPaymentResponse = {
@@ -25,13 +26,13 @@ export type CashPaymentResponse = {
   method: PaymentMethod;
   status: PaymentStatus;
   amount: number;
-  change: number;
+  change?: number | null;
   paidAt: Date;
   order: {
     id: string;
     orderNumber: string;
     totalAmount: number;
-    customerName: string;
+    customerName?: string | null;
     cashier: {
       id: string;
       username: string;

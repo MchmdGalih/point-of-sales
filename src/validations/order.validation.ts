@@ -1,11 +1,17 @@
 import { z } from "zod";
 
 export const orderSchema = z.object({
-  customerName: z.string().min(3),
+  customerName: z
+    .string({ message: "Customer name is required" })
+    .min(3, { message: "Name must be at least 3 characters" }),
   orderItems: z.array(
     z.object({
-      productId: z.string().min(1),
-      quantity: z.number().min(1),
+      productId: z
+        .string({ message: "Product id is required" })
+        .uuid({ message: "Invalid product id" }),
+      quantity: z.number({ message: "Quantity is required" }).min(1, {
+        message: "Quantity must be at least 1",
+      }),
     }),
   ),
 });

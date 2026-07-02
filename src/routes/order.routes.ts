@@ -16,7 +16,7 @@ orderRoutes.get("/", getAllOrderController);
 orderRoutes.post(
   "/create",
   authMiddleware,
-  validate(orderSchema),
+  validate(orderSchema, "body"),
   createOrderController,
 );
 

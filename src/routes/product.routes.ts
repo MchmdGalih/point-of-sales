@@ -21,13 +21,13 @@ productRoutes.post(
   "/create",
   authMiddleware,
   authorizeRole("ADMIN"),
-  validate(productSchema),
+  validate(productSchema, "body"),
   createProductController,
 );
 productRoutes.get("/:id", getProductByIdController);
 productRoutes.put(
   "/edit/:id",
-  validate(UpdateProductSchema),
+  validate(UpdateProductSchema, "body"),
   authMiddleware,
   authorizeRole("ADMIN"),
   updateProductController,

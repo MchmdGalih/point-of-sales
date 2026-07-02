@@ -19,7 +19,7 @@ const userRoutes = Router();
 userRoutes.get("/", getAllUserController);
 userRoutes.post(
   "/create",
-  validate(createUserSchema),
+  validate(createUserSchema, "body"),
   authMiddleware,
   authorizeRole("ADMIN"),
   createUserController,
@@ -27,7 +27,7 @@ userRoutes.post(
 userRoutes.get("/:id", getUserByIdController);
 userRoutes.put(
   "/edit/:id",
-  validate(updateUserSchema),
+  validate(updateUserSchema, "body"),
   authMiddleware,
   authorizeRole("ADMIN"),
   updateUserController,

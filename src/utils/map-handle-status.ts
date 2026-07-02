@@ -1,11 +1,11 @@
 import { OrderStatus, PaymentStatus } from "../../generated/prisma/enums";
 
-export const handleMapStatus = (
-  status: string,
-): {
+interface MapStatus {
   orderStatus: OrderStatus;
   paymentStatus: PaymentStatus;
-} => {
+}
+
+export const handleMapStatus = (status: string): MapStatus => {
   switch (status) {
     case "capture":
     case "settlement":

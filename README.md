@@ -22,7 +22,7 @@ Project Point of Sales (POS) ini merupakan project latihan mandiri yang saya kem
 ## 🔐 Features
 
 - User Authentication (Register & Login)
-- Role-based Access Control (ADMIN / CASHIER)
+- User Authorization (ADMIN/CASHIER)
 - User Management (CRUD)
 - Soft Delete Implementation
 - Input Validation using Zod

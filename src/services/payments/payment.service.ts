@@ -8,6 +8,7 @@ import { generateCode } from "../../utils/generate-code";
 import type {
   CreatePaymentResponse,
   ListPaymentResponse,
+  PaymentDetailResponse,
   PaymentQueryRequest,
 } from "../../model/payment-model";
 import { cashService } from "./cash.service";
@@ -67,7 +68,9 @@ export const createPaymentService = async (
   throw new CustomError("Payment method not found", 404);
 };
 
-export const getPaymentByIdService = async (id: string) => {
+export const getPaymentByIdService = async (
+  id: string,
+): Promise<PaymentDetailResponse> => {
   const payment = await getPaymentByIdRepository(id);
 
   if (!payment) throw new CustomError("Payment not found", 404);

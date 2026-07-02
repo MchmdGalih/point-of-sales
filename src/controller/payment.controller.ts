@@ -62,7 +62,7 @@ export const createPaymentController = async (
       data: result,
     });
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };
 

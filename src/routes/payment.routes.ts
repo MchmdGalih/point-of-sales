@@ -18,17 +18,18 @@ paymentRoutes.get(
   getAllPaymentController,
 );
 paymentRoutes.post(
-  "/cash",
+  "/cash/:orderId",
   authMiddleware,
-  validate(paymentSchema),
+  validate(paramsSchema, "params"),
+  validate(paymentSchema, "body"),
   createPaymentController,
 );
 
 paymentRoutes.post(
   "/midtrans/:orderId",
   authMiddleware,
-  validate(paramsSchema),
-  validate(paymentSchema),
+  validate(paramsSchema, "params"),
+  validate(paymentSchema, "body"),
   createPaymentController,
 );
 
