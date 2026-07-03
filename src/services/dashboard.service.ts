@@ -28,6 +28,7 @@ export const getTodaySummaryService = async () => {
       pendingPayment: data.pendingPayment,
       totalProducts: data.totalProducts,
       lowStockProducts: data.lowStockProducts,
+      totalCustomers: totalCustomers.size,
     },
   };
 };

@@ -70,6 +70,17 @@ export const getTodaySummaryRepository = async (
         },
       },
     }),
+
+    prisma.order.count({
+      where: {
+        createdAt: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+        deletedAt: null,
+        customerName: { in: Array.from(totalCustomers) },
+      },
+    }),
   ]);
 
   return {
@@ -78,6 +89,7 @@ export const getTodaySummaryRepository = async (
     paidOrders,
     pendingPayment,
     totalProducts,
+    totalCustomers,
     lowStockProducts,
   };
 };
