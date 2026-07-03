@@ -6,6 +6,7 @@ import {
   getOrderByIdService,
 } from "../services/order.service";
 import type { OrderStatus } from "../../generated/prisma/enums";
+import type { OrderQueryRequest } from "../model/order-model";
 
 export const getAllOrderController = async (
   req: Request,
@@ -14,18 +15,20 @@ export const getAllOrderController = async (
 ) => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
-  const search = req.query.search as string;
-  const status = req.query.status as OrderStatus;
-  const orderNumber = req.query.orderNumber as string;
+  const search = req.query.search?.toString() || undefined;
+  const status = req.query.status as OrderStatus | undefined;
+  const orderNumber = req.query.orderNumber?.toString() || undefined;
+
+  const query: OrderQueryRequest = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(status && { status }),
+    ...(orderNumber && { orderNumber }),
+  };
 
   try {
-    const result = await getAllOrderService({
-      page,
-      limit,
-      search,
-      status,
-      orderNumber,
-    });
+    const result = await getAllOrderService(query);
     res.status(200).json({
       status: "success",
       message: "Order fetched successfully",

@@ -1,18 +1,9 @@
-import type {
-  OrderItem,
-  OrderStatus,
-  Prisma,
-} from "../../generated/prisma/client";
+import type { OrderStatus, Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type {
-  CreateOrderResponse,
-  OrderDetailResponse,
-  OrderResponse,
-  RepoQueryOrder,
-} from "../model/order-model";
+import type { RepoQueryOrder } from "../model/order-model";
 
-export const getAllOrderRepository = async (query: RepoQueryOrder) => {
-  const { take, skip, search, status, orderNumber } = query;
+export const getAllOrderRepository = async (query?: RepoQueryOrder) => {
+  const { limit = 10, skip = 0, search, status, orderNumber } = query || {};
 
   const where = {
     deletedAt: null,
@@ -38,7 +29,7 @@ export const getAllOrderRepository = async (query: RepoQueryOrder) => {
     prisma.order.findMany({
       where,
       skip,
-      take,
+      take: limit,
       include: {
         user: {
           select: { id: true, username: true },

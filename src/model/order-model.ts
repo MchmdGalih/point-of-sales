@@ -48,7 +48,7 @@ export type OrderQueryRequest = {
 };
 
 export type RepoQueryOrder = OrderQueryRequest & {
-  take: number;
+  limit: number;
   skip: number;
 };
 

@@ -32,7 +32,7 @@ export const getAllOrderService = async (
 
   const { orders, totalData } = await getAllOrderRepository({
     skip,
-    take: limit,
+    limit,
     ...(search && { search }),
     ...(status && { status }),
     ...(orderNumber && { orderNumber }),
