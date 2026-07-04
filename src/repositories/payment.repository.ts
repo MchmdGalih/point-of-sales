@@ -1,7 +1,7 @@
-import type {
-  PaymentMethod,
+import {
   PaymentStatus,
-  Prisma,
+  type PaymentMethod,
+  type Prisma,
 } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { RepoQueryPayment } from "../model/payment-model";
@@ -74,4 +74,33 @@ export const updatePaymentByOrderIdRepository = (
   },
 ) => {
   return tx.payment.update({ where: { orderId }, data: payload });
+};
+
+export const getRevenueByDateRange = (startOfDay: Date, endOfDay: Date) =>
+  prisma.payment.aggregate({
+    where: {
+      status: PaymentStatus.PAID,
+      createdAt: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+export const countPaymentStatusPaidByDateRange = (
+  startOfDay: Date,
+  endOfDay: Date,
+) => {
+  return prisma.payment.count({
+    where: {
+      status: PaymentStatus.PAID,
+      createdAt: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
+  });
 };

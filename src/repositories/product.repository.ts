@@ -6,6 +6,8 @@ import type {
   UpdateProductRequest,
 } from "../model/product-model";
 
+const LOW_STOCK_THRESHOLD = 5;
+
 export const getAllProductRepository = async (query: ProductQueryRepo) => {
   const { skip, take, search, minPrice, maxPrice, inStock, categoryId } = query;
 
@@ -132,5 +134,23 @@ export const decrementProductRepository = (
   return tx.product.update({
     where: { id: productId },
     data: { stock: { decrement: quantity } },
+  });
+};
+
+export const getTotalProducts = () => {
+  return prisma.product.count({
+    where: {
+      deletedAt: null,
+    },
+  });
+};
+
+export const getTotalLowStockProducts = () => {
+  return prisma.product.count({
+    where: {
+      deletedAt: null,
+      stock: { lte: LOW_STOCK_THRESHOLD },
+    },
+    take: 5,
   });
 };

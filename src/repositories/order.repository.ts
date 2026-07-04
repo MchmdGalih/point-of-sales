@@ -1,4 +1,5 @@
-import type { OrderStatus, Prisma } from "../../generated/prisma/client";
+import { start } from "node:repl";
+import { OrderStatus, type Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { RepoQueryOrder } from "../model/order-model";
 
@@ -104,5 +105,52 @@ export const deleteOrderRepository = (id: string): Promise<any> => {
     data: {
       deletedAt: new Date(),
     },
+  });
+};
+
+export const countOrderByDateRange = (startDate: Date, endDate: Date) => {
+  return prisma.order.count({
+    where: {
+      deletedAt: null,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  });
+};
+
+export const countPendingOrdersByDateRange = (
+  startDate: Date,
+  endDate: Date,
+) => {
+  return prisma.order.count({
+    where: {
+      deletedAt: null,
+      status: OrderStatus.PENDING,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  });
+};
+
+export const getDistinctCustomerByDateRange = (
+  startDate: Date,
+  endDate: Date,
+) => {
+  return prisma.order.findMany({
+    where: {
+      deletedAt: null,
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+    select: {
+      customerName: true,
+    },
+    distinct: ["customerName"],
   });
 };
