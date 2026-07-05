@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { getTodaySummaryController } from "../controller/dashboard.controller";
+import {
+  getTodaySummaryController,
+  getTopSellingProductController,
+} from "../controller/dashboard.controller";
 
 const dashboardRoutes = Router();
 
 dashboardRoutes.get("/summary", getTodaySummaryController);
+dashboardRoutes.get("/top-selling", getTopSellingProductController);
 
 export default dashboardRoutes;

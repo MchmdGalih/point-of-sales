@@ -55,7 +55,7 @@ export const createOrderService = async (
 ): Promise<CreateOrderResponse> => {
   const { orderItems, customerName } = payload;
 
-  const productIds = orderItems.map((item: ItemOrder) => item.productId);
+  const productIds = orderItems.map((item) => item.productId);
 
   const products = await getProductByIdsRepository(productIds);
   if (products.length !== productIds.length) {
@@ -64,7 +64,7 @@ export const createOrderService = async (
 
   let totalAmount = 0;
 
-  const orderItemDatas = orderItems.map((item: ItemOrder) => {
+  const orderItemDatas = orderItems.map((item) => {
     const product = products.find((p) => p.id === item.productId);
 
     if (!product) {
