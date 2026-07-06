@@ -1,8 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 import {
+  getrecenstOrdersService,
   getTodaySummaryService,
   getTopSellingProductsService,
 } from "../services/dashboard.service";
+import type { DashboardQuery } from "../validations/dashboard.validation";
 
 export const getTodaySummaryController = async (
   req: Request,
@@ -28,9 +30,14 @@ export const getTopSellingProductController = async (
   next: NextFunction,
 ) => {
   try {
-    const { period } = req.query as { period: "today" | "week" | "month" };
+    const { period, startOfDate, endOfDate } = res.locals
+      .query as DashboardQuery;
 
-    const result = await getTopSellingProductsService(new Date(), new Date());
+    const result = await getTopSellingProductsService(
+      period,
+      startOfDate,
+      endOfDate,
+    );
 
     res.status(200).json({
       status: "success",
@@ -38,6 +45,24 @@ export const getTopSellingProductController = async (
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+export const getRecentOrdersController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await getrecenstOrdersService();
+
+    res.status(200).json({
+      status: "success",
+      message: "Recent orders fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
   }
 };

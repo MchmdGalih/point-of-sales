@@ -7,6 +7,7 @@ import {
   countPendingOrdersByDateRange,
   getDistinctCustomerByDateRange,
   countOrderByDateRange,
+  getRecentOrdersRepository,
 } from "../repositories/order.repository";
 import { getTopSellingProductsrepository } from "../repositories/orderItem.repository";
 import {
@@ -18,16 +19,11 @@ import {
   getTotalLowStockProducts,
   getTotalProducts,
 } from "../repositories/product.repository";
+import { getDateRange, type PeriodeType } from "../utils/date";
 
 export const getTodaySummaryService =
   async (): Promise<DashboardSummaryResponse> => {
-    const now = new Date();
-
-    const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
+    const { start, end } = getDateRange("today");
 
     const [
       totalOrders,
@@ -38,13 +34,13 @@ export const getTodaySummaryService =
       lowStockProducts,
       distinctCustomers,
     ] = await Promise.all([
-      countOrderByDateRange(startOfDay, endOfDay),
-      getRevenueByDateRange(startOfDay, endOfDay),
-      countPaymentStatusPaidByDateRange(startOfDay, endOfDay),
-      countPendingOrdersByDateRange(startOfDay, endOfDay),
+      countOrderByDateRange(start, end),
+      getRevenueByDateRange(start, end),
+      countPaymentStatusPaidByDateRange(start, end),
+      countPendingOrdersByDateRange(start, end),
       getTotalProducts(),
       getTotalLowStockProducts(),
-      getDistinctCustomerByDateRange(startOfDay, endOfDay),
+      getDistinctCustomerByDateRange(start, end),
     ]);
 
     const revenue: number = Number(revenueResult._sum.amount ?? 0);
@@ -67,10 +63,13 @@ export const getTodaySummaryService =
   };
 
 export const getTopSellingProductsService = async (
-  startDate: Date,
-  endDate: Date,
+  periode: PeriodeType,
+  customStart?: string,
+  customEnd?: string,
 ): Promise<TopSellingProductResponse[]> => {
-  const data = await getTopSellingProductsrepository(startDate, endDate);
+  const { start, end } = getDateRange(periode, customStart, customEnd);
+
+  const data = await getTopSellingProductsrepository(start, end);
 
   if (data.length === 0) return [];
   const productIds = data.map((item) => item.productId);
@@ -85,4 +84,8 @@ export const getTopSellingProductsService = async (
       quantity: item._sum.quantity ?? 0,
     }),
   );
+};
+
+export const getrecenstOrdersService = async () => {
+  return await getRecentOrdersRepository();
 };

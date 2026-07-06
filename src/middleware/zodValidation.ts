@@ -5,7 +5,6 @@ export const validate =
   (schema: ZodSchema, source: "body" | "params" | "query" = "body") =>
   (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req[source]);
-
     if (!result.success) {
       return res.status(400).json({
         message: "Validation Error",
@@ -18,6 +17,6 @@ export const validate =
 
     if (source === "body") req.body = result.data;
     if (source === "params") req.params = result.data as Record<string, string>;
-    if (source === "query") req.query = result.data as Record<string, string>;
+    if (source === "query") res.locals.query = result.data;
     next();
   };

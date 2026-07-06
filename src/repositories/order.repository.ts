@@ -155,3 +155,20 @@ export const getDistinctCustomerByDateRange = (
   });
 };
 
+export const getRecentOrdersRepository = () => {
+  return prisma.order.findMany({
+    where: {
+      deletedAt: null,
+    },
+
+    include: {
+      _count: {
+        select: { orderItem: true },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+  });
+};
