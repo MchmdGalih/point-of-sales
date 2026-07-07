@@ -10,6 +10,7 @@ import {
   getDistinctCustomerByDateRange,
   countOrderByDateRange,
   getRecentOrdersRepository,
+  getSalesTrendRepository,
 } from "../repositories/order.repository";
 import { getTopSellingProductsrepository } from "../repositories/orderItem.repository";
 import {
@@ -118,4 +119,15 @@ export const countPaymentMethodService = async (): Promise<
 
 export const getLowStockProductService = async () => {
   return await getTotalLowStockProducts();
+};
+
+export const getSalesTrendService = async (period: PeriodeType) => {
+  const { start, end } = getDateRange(period);
+
+  const sales = await getSalesTrendRepository(start, end);
+
+  return {
+    period,
+    salesTrend: sales,
+  };
 };

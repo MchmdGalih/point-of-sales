@@ -3,6 +3,7 @@ import {
   countPaymentMethodService,
   getLowStockProductService,
   getrecenstOrdersService,
+  getSalesTrendService,
   getTodaySummaryService,
   getTopSellingProductsService,
 } from "../services/dashboard.service";
@@ -92,6 +93,25 @@ export const getLowStockProductController = async (
     res.status(200).json({
       status: "success",
       message: "Low stock products fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSalesTrendController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { period } = res.locals.query as DashboardQuery;
+
+    const result = await getSalesTrendService(period);
+    return res.status(200).json({
+      status: "success",
+      message: "Sales trend fetched successfully",
       data: result,
     });
   } catch (error) {

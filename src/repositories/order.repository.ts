@@ -1,4 +1,3 @@
-import { start } from "node:repl";
 import { OrderStatus, type Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { RepoQueryOrder } from "../model/order-model";
@@ -172,4 +171,16 @@ export const getRecentOrdersRepository = () => {
     },
     take: 5,
   });
+};
+
+export const getSalesTrendRepository = (startOfDate: Date, endOfDate: Date) => {
+  return prisma.$queryRaw`
+    SELECT DATE("createdAt") as date,
+    COUNT("id")::int as "totalOrders",
+    SUM("totalAmount")::int as "revenue"
+    FROM "Order"
+    WHERE "createdAt" >= ${startOfDate} AND  "createdAt" <= ${endOfDate} AND "deletedAt" IS NULL AND "status" = 'COMPLETED'
+    GROUP BY DATE("createdAt")
+    ORDER BY date asc 
+    `;
 };
