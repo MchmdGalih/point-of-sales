@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import {
+  countPaymentMethodService,
+  getLowStockProductService,
   getrecenstOrdersService,
   getTodaySummaryService,
   getTopSellingProductsService,
@@ -30,14 +32,9 @@ export const getTopSellingProductController = async (
   next: NextFunction,
 ) => {
   try {
-    const { period, startOfDate, endOfDate } = res.locals
-      .query as DashboardQuery;
+    const { period } = res.locals.query as DashboardQuery;
 
-    const result = await getTopSellingProductsService(
-      period,
-      startOfDate,
-      endOfDate,
-    );
+    const result = await getTopSellingProductsService(period);
 
     res.status(200).json({
       status: "success",
@@ -60,6 +57,41 @@ export const getRecentOrdersController = async (
     res.status(200).json({
       status: "success",
       message: "Recent orders fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const countPaymentMethodBreakdownController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await countPaymentMethodService();
+
+    res.status(200).json({
+      status: "success",
+      message: "Payment method breakdown fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getLowStockProductController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await getLowStockProductService();
+    res.status(200).json({
+      status: "success",
+      message: "Low stock products fetched successfully",
       data: result,
     });
   } catch (error) {

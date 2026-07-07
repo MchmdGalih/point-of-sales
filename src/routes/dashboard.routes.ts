@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  countPaymentMethodBreakdownController,
+  getLowStockProductController,
   getRecentOrdersController,
   getTodaySummaryController,
   getTopSellingProductController,
@@ -17,5 +19,7 @@ dashboardRoutes.get(
 );
 
 dashboardRoutes.get("/recent-order", getRecentOrdersController);
+dashboardRoutes.get("/payment-method", countPaymentMethodBreakdownController);
+dashboardRoutes.get("/stock-low-products", getLowStockProductController);
 
 export default dashboardRoutes;

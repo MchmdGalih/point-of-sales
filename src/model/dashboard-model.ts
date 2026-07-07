@@ -16,3 +16,17 @@ export type TopSellingProductResponse = {
   productName: string;
   quantity: number;
 };
+
+export type RecentOrdersResponse = {
+  orderNumber: string;
+  customerName: string;
+  totalAmount: number;
+  paymentMethod?: string | undefined;
+  paymentStatus?: string | undefined;
+};
+
+export type PaymentMethodBreakdownResponse = {
+  method: string;
+  transactionCount: number;
+  amount: number;
+};

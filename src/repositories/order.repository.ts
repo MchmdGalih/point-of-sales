@@ -165,6 +165,7 @@ export const getRecentOrdersRepository = () => {
       _count: {
         select: { orderItem: true },
       },
+      payment: true,
     },
     orderBy: {
       createdAt: "desc",

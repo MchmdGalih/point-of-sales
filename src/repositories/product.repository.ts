@@ -145,12 +145,27 @@ export const getTotalProducts = () => {
   });
 };
 
-export const getTotalLowStockProducts = () => {
+export const countTotalLowStockProducts = () => {
   return prisma.product.count({
     where: {
       deletedAt: null,
       stock: { lte: LOW_STOCK_THRESHOLD },
     },
     take: 5,
+  });
+};
+
+export const getTotalLowStockProducts = () => {
+  return prisma.product.findMany({
+    where: {
+      deletedAt: null,
+      stock: { lte: LOW_STOCK_THRESHOLD },
+    },
+    select: {
+      id: true,
+      name: true,
+      stock: true,
+    },
+    orderBy: { stock: "desc" },
   });
 };

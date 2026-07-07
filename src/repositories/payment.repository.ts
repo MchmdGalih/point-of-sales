@@ -4,7 +4,7 @@ import {
   type Prisma,
 } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-  import type { RepoQueryPayment } from "../model/payment-model";
+import type { RepoQueryPayment } from "../model/payment-model";
 
 export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
   const { skip, paymentNumber, take, method, status, orderId } = query;
@@ -101,6 +101,19 @@ export const countPaymentStatusPaidByDateRange = (
         gte: startOfDay,
         lte: endOfDay,
       },
+    },
+  });
+};
+
+export const countPaymentMethodRepository = () => {
+  return prisma.payment.groupBy({
+    where: { status: PaymentStatus.PAID },
+    by: ["method"],
+    _count: {
+      id: true,
+    },
+    _sum: {
+      amount: true,
     },
   });
 };

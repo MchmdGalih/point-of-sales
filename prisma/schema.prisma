@@ -85,7 +85,7 @@ model Order {
   orderNumber String @unique
   totalAmount Decimal
   status OrderStatus @default(PENDING)
-  customerName String?
+  customerName String
   userId String
   user User @relation(fields: [userId], references: [id])
   orderItem OrderItem[]

@@ -1,6 +1,8 @@
-import type { Product } from "../../generated/prisma/client";
+import type { Payment } from "../../generated/prisma/client";
 import type {
   DashboardSummaryResponse,
+  PaymentMethodBreakdownResponse,
+  RecentOrdersResponse,
   TopSellingProductResponse,
 } from "../model/dashboard-model";
 import {
@@ -11,13 +13,15 @@ import {
 } from "../repositories/order.repository";
 import { getTopSellingProductsrepository } from "../repositories/orderItem.repository";
 import {
+  countPaymentMethodRepository,
   countPaymentStatusPaidByDateRange,
   getRevenueByDateRange,
 } from "../repositories/payment.repository";
 import {
   getProductByIdsRepository,
-  getTotalLowStockProducts,
+  countTotalLowStockProducts,
   getTotalProducts,
+  getTotalLowStockProducts,
 } from "../repositories/product.repository";
 import { getDateRange, type PeriodeType } from "../utils/date";
 
@@ -39,7 +43,7 @@ export const getTodaySummaryService =
       countPaymentStatusPaidByDateRange(start, end),
       countPendingOrdersByDateRange(start, end),
       getTotalProducts(),
-      getTotalLowStockProducts(),
+      countTotalLowStockProducts(),
       getDistinctCustomerByDateRange(start, end),
     ]);
 
@@ -63,11 +67,9 @@ export const getTodaySummaryService =
   };
 
 export const getTopSellingProductsService = async (
-  periode: PeriodeType,
-  customStart?: string,
-  customEnd?: string,
+  period: PeriodeType,
 ): Promise<TopSellingProductResponse[]> => {
-  const { start, end } = getDateRange(periode, customStart, customEnd);
+  const { start, end } = getDateRange(period);
 
   const data = await getTopSellingProductsrepository(start, end);
 
@@ -86,6 +88,34 @@ export const getTopSellingProductsService = async (
   );
 };
 
-export const getrecenstOrdersService = async () => {
-  return await getRecentOrdersRepository();
+export const getrecenstOrdersService = async (): Promise<
+  RecentOrdersResponse[]
+> => {
+  const datas = await getRecentOrdersRepository();
+  const result = datas.map((data) => ({
+    orderNumber: data.orderNumber,
+    customerName: data.customerName,
+    totalAmount: Number(data.totalAmount),
+    paymentMethod: data.payment?.method,
+    paymentStatus: data.payment?.status,
+  }));
+
+  return result;
+};
+
+export const countPaymentMethodService = async (): Promise<
+  PaymentMethodBreakdownResponse[]
+> => {
+  const datas = await countPaymentMethodRepository();
+  const result = datas.map((data) => ({
+    method: data.method,
+    transactionCount: data._count.id,
+    amount: Number(data._sum.amount),
+  }));
+
+  return result;
+};
+
+export const getLowStockProductService = async () => {
+  return await getTotalLowStockProducts();
 };
