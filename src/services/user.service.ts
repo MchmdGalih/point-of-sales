@@ -13,14 +13,15 @@ import type {
   CreateUserRequest,
   UpdateUserRequest,
   UserListResponse,
-  UserQueryRequest,
   UserResponse,
 } from "../model/user-model";
+import type { UserQueryRequest } from "../validations/users.validtion";
 
 export const getAllUserService = async (
   query: UserQueryRequest,
 ): Promise<UserListResponse> => {
-  const { page = 1, limit = 10, search, role } = query;
+  const { page, limit, search, role } = query;
+
   const skip = (page - 1) * limit;
 
   const result = await getAllUserRepository({

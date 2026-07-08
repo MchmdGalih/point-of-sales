@@ -22,16 +22,12 @@ export type CreateProductRequest = {
 
 export type UpdateProductRequest = Partial<Omit<CreateProductRequest, "sku">>;
 
-export type ProductQueryRequest = {
+export type ProductQueryRepo = {
   search?: string;
   minPrice?: number;
   maxPrice?: number;
-  page?: number;
-  limit?: number;
   inStock?: boolean;
   categoryId?: string;
-};
-export type ProductQueryRepo = ProductQueryRequest & {
   take: number;
   skip: number;
 };

@@ -12,11 +12,12 @@ import { validate } from "../middleware/zodValidation";
 import {
   createUserSchema,
   updateUserSchema,
+  userQuerySchema,
 } from "../validations/users.validtion";
 
 const userRoutes = Router();
 
-userRoutes.get("/", getAllUserController);
+userRoutes.get("/", validate(userQuerySchema, "query"), getAllUserController);
 userRoutes.post(
   "/create",
   validate(createUserSchema, "body"),

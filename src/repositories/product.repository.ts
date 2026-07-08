@@ -9,30 +9,33 @@ import type {
 const LOW_STOCK_THRESHOLD = 5;
 
 export const getAllProductRepository = async (query: ProductQueryRepo) => {
-  const { skip, take, search, minPrice, maxPrice, inStock, categoryId } = query;
+  const { skip, take, search, minPrice, maxPrice, categoryId } = query;
 
   const where = {
     deletedAt: null,
     ...(search && {
-      name: {
-        contains: search,
-        mode: "insensitive" as const,
-      },
-      ...(search && {
-        sku: {
-          contains: search,
-          mode: "insensitive" as const,
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
         },
+        {
+          sku: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+      ],
+      ...((minPrice !== undefined || maxPrice !== undefined) && {
+        price: {
+          ...(minPrice !== undefined && { gte: minPrice }),
+        },
+        ...(maxPrice !== undefined && { lte: maxPrice }),
       }),
+      ...(categoryId && { categoryId }),
     }),
-    ...((minPrice || maxPrice) && {
-      price: {
-        ...(minPrice && { gte: minPrice }),
-        ...(maxPrice && { lte: maxPrice }),
-      },
-    }),
-    ...(inStock && { stock: { gt: 0 } }),
-    ...(categoryId && { categoryId }),
   };
 
   const [products, totalData] = await Promise.all([
@@ -56,10 +59,8 @@ export const getAllProductRepository = async (query: ProductQueryRepo) => {
   return { products, totalData };
 };
 
-export const createProductRepository = async (
-  payload: CreateProductRequest,
-) => {
-  return await prisma.product.create({
+export const createProductRepository = (payload: CreateProductRequest) => {
+  return prisma.product.create({
     data: payload,
     include: {
       category: {
@@ -72,11 +73,11 @@ export const createProductRepository = async (
   });
 };
 
-export const updateProductRepository = async (
+export const updateProductRepository = (
   id: string,
   payload: UpdateProductRequest,
 ) => {
-  return await prisma.product.update({
+  return prisma.product.update({
     where: {
       id,
       deletedAt: null,
@@ -93,8 +94,8 @@ export const updateProductRepository = async (
   });
 };
 
-export const getProductByIdRepository = async (id: string) => {
-  return await prisma.product.findUnique({
+export const getProductByIdRepository = (id: string) => {
+  return prisma.product.findUnique({
     where: {
       id,
       deletedAt: null,
@@ -110,8 +111,8 @@ export const getProductByIdRepository = async (id: string) => {
   });
 };
 
-export const deleteProductRepository = async (id: string) => {
-  await prisma.product.update({
+export const deleteProductRepository = (id: string) => {
+  return prisma.product.update({
     where: { id },
     data: { deletedAt: new Date() },
   });

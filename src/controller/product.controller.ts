@@ -6,6 +6,7 @@ import {
   getProductByIdService,
   updateProductService,
 } from "../services/product.service";
+import type { ProductQueryRequest } from "../validations/product.validation";
 
 export const getAllProductsController = async (
   req: Request,
@@ -13,32 +14,14 @@ export const getAllProductsController = async (
   next: NextFunction,
 ) => {
   try {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const search = req.query.search as string;
-    const minPrice = Number(req.query.minPrice) || 0;
-    const maxPrice = Number(req.query.maxPrice) || 0;
-    const inStock = req.query.inStock === "true" ? true : false;
-    const categoryId = req.query.categoryId as string;
+    const query = res.locals.query as ProductQueryRequest;
 
-    const result = await getAllProductService({
-      page,
-      limit,
-      search,
-      minPrice,
-      maxPrice,
-      inStock,
-      categoryId,
-    });
+    const result = await getAllProductService(query);
     res.status(200).json({
       status: "success",
       message: "Products fetched successfully",
       data: result.data,
-      meta: {
-        page,
-        limit,
-        totalData: result.meta.totalData,
-      },
+      meta: result.meta,
     });
   } catch (error) {
     next(error);

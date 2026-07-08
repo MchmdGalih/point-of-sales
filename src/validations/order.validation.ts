@@ -1,4 +1,9 @@
 import { z } from "zod";
+import { paginationSchema } from "./pagination.validation";
+
+export const orderQuerySchema = paginationSchema.extend({
+  
+});
 
 export const orderSchema = z.object({
   customerName: z

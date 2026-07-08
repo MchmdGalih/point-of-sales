@@ -8,6 +8,7 @@ import {
 } from "../controller/product.controller";
 import { validate } from "../middleware/zodValidation";
 import {
+  productQuerySchema,
   productSchema,
   UpdateProductSchema,
 } from "../validations/product.validation";
@@ -16,7 +17,11 @@ import { authorizeRole } from "../middleware/roleMiddleware";
 
 const productRoutes = Router();
 
-productRoutes.get("/", getAllProductsController);
+productRoutes.get(
+  "/",
+  validate(productQuerySchema, "query"),
+  getAllProductsController,
+);
 productRoutes.post(
   "/create",
   authMiddleware,

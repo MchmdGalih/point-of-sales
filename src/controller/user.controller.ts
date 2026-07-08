@@ -6,7 +6,6 @@ import {
   getUserByIdService,
   updateUserService,
 } from "../services/user.service";
-import type { Role } from "../../generated/prisma/enums";
 
 export const getAllUserController = async (
   req: Request,
@@ -14,22 +13,15 @@ export const getAllUserController = async (
   next: NextFunction,
 ) => {
   try {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const search = req.query.search as string;
-    const role = req.query.role as Role;
+    const query = res.locals.query;
 
-    const result = await getAllUserService({
-      page,
-      limit,
-      search,
-      role,
-    });
+    const result = await getAllUserService(query);
+
     res.status(200).json({
       status: "success",
       message: "User fetched successfully",
       data: result.data,
-      pagination: result.meta,
+      meta: result.meta,
     });
   } catch (error) {
     next(error);

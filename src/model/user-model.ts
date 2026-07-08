@@ -30,14 +30,9 @@ export type UpdateUserRequest = {
   role?: Role;
 };
 
-export type UserQueryRequest = {
-  page?: number;
-  limit?: number;
-  search?: string;
-  role?: Role;
-};
-
-export type UserQueryRepository = UserQueryRequest & {
+export type UserQueryRepository = {
   skip: number;
   take: number;
+  search?: string;
+  role?: Role;
 };

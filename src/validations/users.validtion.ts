@@ -1,5 +1,13 @@
 import { z } from "zod";
 import { Role } from "../../generated/prisma/enums";
+import { paginationSchema } from "./pagination.validation";
+
+export const userQuerySchema = paginationSchema.extend({
+  search: z.string().trim().optional(),
+  role: z.nativeEnum(Role).optional(),
+});
+
+export type UserQueryRequest = z.infer<typeof userQuerySchema>;
 
 export const createUserSchema = z.object({
   username: z

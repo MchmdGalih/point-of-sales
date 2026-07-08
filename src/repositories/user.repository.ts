@@ -1,9 +1,8 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { UserQueryRepository } from "../model/user-model";
-
 export const getAllUserRepository = async (query: UserQueryRepository) => {
-  const { take, skip, search, role } = query;
+  const { skip, take, search, role } = query;
 
   const where = {
     deletedAt: null,
@@ -92,8 +91,8 @@ export const updateUserRepository = (
   });
 };
 
-export const deleteUserRepository = async (id: string) => {
-  await prisma.user.update({
+export const deleteUserRepository = (id: string) => {
+  return prisma.user.update({
     where: {
       id,
     },

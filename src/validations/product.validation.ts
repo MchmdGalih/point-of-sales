@@ -1,4 +1,15 @@
 import { z } from "zod";
+import { paginationSchema } from "./pagination.validation";
+
+export const productQuerySchema = paginationSchema.extend({
+  search: z.string().trim().optional(),
+  minPrice: z.coerce.number().min(0).optional(),
+  maxPrice: z.coerce.number().min(0).optional(),
+  stockStatus: z.enum(["LOW", "OUT OF STOCK", "AVAILABLE"]).optional(),
+  categoryId: z.string().uuid().optional(),
+});
+
+export type ProductQueryRequest = z.infer<typeof productQuerySchema>;
 
 export const productSchema = z.object({
   name: z

@@ -2,7 +2,6 @@ import { CustomError } from "../errors/customError";
 import type {
   CreateProductRequest,
   ListProductResponse,
-  ProductQueryRequest,
   ProductResponse,
   UpdateProductRequest,
 } from "../model/product-model";
@@ -19,19 +18,12 @@ import {
   serializeProducts,
 } from "../utils/formatter/product";
 import { generateCode } from "../utils/generate-code";
+import type { ProductQueryRequest } from "../validations/product.validation";
 
 export const getAllProductService = async (
   query: ProductQueryRequest,
 ): Promise<ListProductResponse> => {
-  const {
-    page = 1,
-    limit = 10,
-    search,
-    minPrice,
-    maxPrice,
-    inStock,
-    categoryId,
-  } = query;
+  const { page, limit, search, minPrice, maxPrice, categoryId } = query;
   const skip = (page - 1) * limit;
 
   const { products, totalData } = await getAllProductRepository({
@@ -40,7 +32,6 @@ export const getAllProductService = async (
     ...(search && { search }),
     ...(minPrice && { minPrice }),
     ...(maxPrice && { maxPrice }),
-    ...(inStock && { inStock }),
     ...(categoryId && { categoryId }),
   });
 
