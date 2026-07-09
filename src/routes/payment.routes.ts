@@ -1,20 +1,25 @@
 import { Router } from "express";
 import {
   createPaymentController,
+  deletePaymentController,
   getAllPaymentController,
   getPaymentByIdController,
 } from "../controller/payment.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
-import { authorizeRole } from "../middleware/roleMiddleware";
-import { paramsSchema, paymentSchema } from "../validations/payment.validation";
+import {
+  paramsSchema,
+  paymentQuerySchema,
+  paymentSchema,
+} from "../validations/payment.validation";
 import { validate } from "../middleware/zodValidation";
+import { authorizeRole } from "../middleware/roleMiddleware";
 
 const paymentRoutes = Router();
 
 paymentRoutes.get(
   "/",
+  validate(paymentQuerySchema, "query"),
   authMiddleware,
-  authorizeRole("ADMIN"),
   getAllPaymentController,
 );
 paymentRoutes.post(
@@ -34,4 +39,11 @@ paymentRoutes.post(
 );
 
 paymentRoutes.get("/:id", getPaymentByIdController);
+
+paymentRoutes.delete(
+  "/:id",
+  authMiddleware,
+  authorizeRole("ADMIN"),
+  deletePaymentController,
+);
 export default paymentRoutes;

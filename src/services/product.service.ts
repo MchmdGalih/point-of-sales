@@ -23,7 +23,8 @@ import type { ProductQueryRequest } from "../validations/product.validation";
 export const getAllProductService = async (
   query: ProductQueryRequest,
 ): Promise<ListProductResponse> => {
-  const { page, limit, search, minPrice, maxPrice, categoryId } = query;
+  const { page, limit, search, minPrice, maxPrice, stockStatus, categoryId } =
+    query;
   const skip = (page - 1) * limit;
 
   const { products, totalData } = await getAllProductRepository({
@@ -32,6 +33,7 @@ export const getAllProductService = async (
     ...(search && { search }),
     ...(minPrice && { minPrice }),
     ...(maxPrice && { maxPrice }),
+    ...(stockStatus && { stockStatus }),
     ...(categoryId && { categoryId }),
   });
 

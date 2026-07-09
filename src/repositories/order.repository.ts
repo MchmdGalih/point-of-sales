@@ -2,26 +2,37 @@ import { OrderStatus, type Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { RepoQueryOrder } from "../model/order-model";
 
-export const getAllOrderRepository = async (query?: RepoQueryOrder) => {
-  const { limit = 10, skip = 0, search, status, orderNumber } = query || {};
+export const getAllOrderRepository = async (query: RepoQueryOrder) => {
+  const { take, skip, search, status } = query;
 
   const where = {
     deletedAt: null,
 
     ...(search && {
-      user: {
-        username: {
-          contains: search,
-          mode: "insensitive" as const,
+      OR: [
+        {
+          user: {
+            username: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
         },
-      },
+        {
+          orderNumber: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          customerName: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+      ],
     }),
-    ...(orderNumber && {
-      orderNumber: {
-        contains: orderNumber,
-        mode: "insensitive" as const,
-      },
-    }),
+
     ...(status && { status: status as OrderStatus }),
   };
 
@@ -29,7 +40,7 @@ export const getAllOrderRepository = async (query?: RepoQueryOrder) => {
     prisma.order.findMany({
       where,
       skip,
-      take: limit,
+      take,
       include: {
         user: {
           select: { id: true, username: true },
@@ -51,10 +62,10 @@ export const getAllOrderRepository = async (query?: RepoQueryOrder) => {
   };
 };
 
-export const createOrderRepository = async (
+export const createOrderRepository = (
   payload: Prisma.OrderUncheckedCreateInput,
 ) => {
-  return await prisma.order.create({
+  return prisma.order.create({
     data: payload,
     include: {
       orderItem: true,
@@ -65,8 +76,8 @@ export const createOrderRepository = async (
   });
 };
 
-export const getOrderByIdRepository = async (id: string) => {
-  return await prisma.order.findUnique({
+export const getOrderByIdRepository = (id: string) => {
+  return prisma.order.findUnique({
     where: { id, deletedAt: null },
     include: {
       user: {
@@ -96,7 +107,7 @@ export const updateOrderStatusRepository = (
   });
 };
 
-export const deleteOrderRepository = (id: string): Promise<any> => {
+export const deleteOrderRepository = (id: string) => {
   return prisma.order.update({
     where: {
       id,

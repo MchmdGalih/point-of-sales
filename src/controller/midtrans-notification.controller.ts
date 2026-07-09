@@ -8,8 +8,9 @@ export const handleMidtransNotificationController = async (
   next: NextFunction,
 ) => {
   try {
-    logger.info("Midtrans notification received");
     await handleMidtransNotificationService(req.body);
+
+    logger.info("Midtrans notification received");
 
     res.status(200).json({
       status: "success",

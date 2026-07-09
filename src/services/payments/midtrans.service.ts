@@ -4,20 +4,14 @@ import { CustomError } from "../../errors/customError";
 import type { MidtransPaymentResponse } from "../../model/payment-model";
 import { getOrderByIdRepository } from "../../repositories/order.repository";
 import { createPaymentRepository } from "../../repositories/payment.repository";
-import { getUserByIdRepository } from "../../repositories/user.repository";
 
 export const midtransService = async (
   orderId: string,
   paymentNumber: string,
-  userId: string,
 ): Promise<MidtransPaymentResponse> => {
   const existingOrder = await getOrderByIdRepository(orderId);
 
-  if (!existingOrder) throw new Error("Order not found");
-
-  const users = await getUserByIdRepository(userId);
-
-  if (!users) throw new CustomError("User not found", 404);
+  if (!existingOrder) throw new CustomError("Order not found", 404);
 
   let parameter = {
     transaction_details: {
@@ -26,7 +20,6 @@ export const midtransService = async (
     },
     customer_details: {
       first_name: existingOrder.customerName,
-      last_name: users.username,
     },
     items_details: existingOrder.orderItem.map((item: any) => ({
       id: item.productId,

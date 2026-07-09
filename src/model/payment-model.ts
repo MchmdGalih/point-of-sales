@@ -16,7 +16,6 @@ export type PaymentResponse = {
   change?: number | null;
   providerTransactionId?: string | null;
   providerPaymentType?: string | null;
-  snapToken: string | null;
   paidAt: Date;
 };
 
@@ -50,15 +49,6 @@ export type CreatePaymentResponse =
   | CashPaymentResponse
   | MidtransPaymentResponse;
 
-export type PaymentQueryRequest = {
-  page?: number;
-  limit?: number;
-  paymentNumber?: string;
-  status?: PaymentStatus;
-  orderId?: string;
-  method?: PaymentMethod;
-};
-
 export type PaymentDetailResponse = {
   id: string;
   paymentNumber: string;
@@ -90,9 +80,13 @@ export type PaymentDetailResponse = {
   ];
 };
 
-export type RepoQueryPayment = PaymentQueryRequest & {
+export type RepoQueryPayment = {
   take: number;
   skip: number;
+  search?: string;
+  paymentNumber?: string;
+  status?: PaymentStatus;
+  method?: PaymentMethod;
 };
 
 export type ListPaymentResponse = PaginationResponse<PaymentResponse>;

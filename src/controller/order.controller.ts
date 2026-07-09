@@ -5,27 +5,14 @@ import {
   getAllOrderService,
   getOrderByIdService,
 } from "../services/order.service";
-import type { OrderStatus } from "../../generated/prisma/enums";
-import type { OrderQueryRequest } from "../model/order-model";
+import type { OrderQueryRequest } from "../validations/order.validation";
 
 export const getAllOrderController = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
-  const search = req.query.search?.toString() || undefined;
-  const status = req.query.status as OrderStatus | undefined;
-  const orderNumber = req.query.orderNumber?.toString() || undefined;
-
-  const query: OrderQueryRequest = {
-    page,
-    limit,
-    ...(search && { search }),
-    ...(status && { status }),
-    ...(orderNumber && { orderNumber }),
-  };
+  const query = res.locals.query as OrderQueryRequest;
 
   try {
     const result = await getAllOrderService(query);

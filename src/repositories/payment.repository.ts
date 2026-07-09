@@ -7,18 +7,29 @@ import { prisma } from "../lib/prisma";
 import type { RepoQueryPayment } from "../model/payment-model";
 
 export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
-  const { skip, paymentNumber, take, method, status, orderId } = query;
+  const { skip, take, search, method, status } = query;
 
   const where = {
-    ...(paymentNumber && {
-      paymentNumber: {
-        contains: paymentNumber,
-        mode: "insensitive" as const,
-      },
+    ...(search && {
+      OR: [
+        {
+          paymentNumber: {
+            contains: search,
+            mode: "insensitive" as const,
+          },
+        },
+        {
+          order: {
+            customerName: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+        },
+      ],
     }),
     ...(status && { status: status as PaymentStatus }),
     ...(method && { method: method as PaymentMethod }),
-    ...(orderId && { orderId }),
   };
   const [payments, totalData] = await Promise.all([
     prisma.payment.findMany({
@@ -74,6 +85,10 @@ export const updatePaymentByOrderIdRepository = (
   },
 ) => {
   return tx.payment.update({ where: { orderId }, data: payload });
+};
+
+export const deletePaymentRepository = (id: string) => {
+  return prisma.payment.delete({ where: { id } });
 };
 
 export const getRevenueByDateRange = (startOfDay: Date, endOfDay: Date) =>

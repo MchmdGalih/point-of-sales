@@ -7,12 +7,16 @@ import {
 } from "../controller/order.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { validate } from "../middleware/zodValidation";
-import { orderSchema } from "../validations/order.validation";
+import { orderQuerySchema, orderSchema } from "../validations/order.validation";
 import { authorizeRole } from "../middleware/roleMiddleware";
 
 const orderRoutes = Router();
 
-orderRoutes.get("/", getAllOrderController);
+orderRoutes.get(
+  "/",
+  validate(orderQuerySchema, "query"),
+  getAllOrderController,
+);
 orderRoutes.post(
   "/create",
   authMiddleware,

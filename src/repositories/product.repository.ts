@@ -9,7 +9,8 @@ import type {
 const LOW_STOCK_THRESHOLD = 5;
 
 export const getAllProductRepository = async (query: ProductQueryRepo) => {
-  const { skip, take, search, minPrice, maxPrice, categoryId } = query;
+  const { skip, take, search, minPrice, maxPrice, stockStatus, categoryId } =
+    query;
 
   const where = {
     deletedAt: null,
@@ -28,14 +29,19 @@ export const getAllProductRepository = async (query: ProductQueryRepo) => {
           },
         },
       ],
-      ...((minPrice !== undefined || maxPrice !== undefined) && {
-        price: {
-          ...(minPrice !== undefined && { gte: minPrice }),
-        },
-        ...(maxPrice !== undefined && { lte: maxPrice }),
-      }),
-      ...(categoryId && { categoryId }),
     }),
+    ...((minPrice !== undefined || maxPrice !== undefined) && {
+      price: {
+        ...(minPrice !== undefined && { gte: minPrice }),
+      },
+      ...(maxPrice !== undefined && { lte: maxPrice }),
+    }),
+    ...(stockStatus === "LOW" && {
+      stock: { gte: 0, lte: LOW_STOCK_THRESHOLD },
+    }),
+    ...(stockStatus === "OUT_OF_STOCK" && { stock: 0 }),
+    ...(stockStatus === "AVAILABLE" && { stock: { gt: 10 } }),
+    ...(categoryId && { categoryId }),
   };
 
   const [products, totalData] = await Promise.all([

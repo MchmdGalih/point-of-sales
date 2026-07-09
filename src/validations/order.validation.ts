@@ -1,9 +1,13 @@
 import { z } from "zod";
 import { paginationSchema } from "./pagination.validation";
+import { OrderStatus } from "../../generated/prisma/enums";
 
 export const orderQuerySchema = paginationSchema.extend({
-  
+  search: z.string().trim().optional(),
+  status: z.nativeEnum(OrderStatus).optional(),
 });
+
+export type OrderQueryRequest = z.infer<typeof orderQuerySchema>;
 
 export const orderSchema = z.object({
   customerName: z

@@ -1,6 +1,7 @@
 import { PaymentMethod } from "../../../generated/prisma/enums";
 import { CustomError } from "../../errors/customError";
 import {
+  deletePaymentRepository,
   getAllPaymentRepository,
   getPaymentByIdRepository,
 } from "../../repositories/payment.repository";
@@ -9,7 +10,6 @@ import type {
   CreatePaymentResponse,
   ListPaymentResponse,
   PaymentDetailResponse,
-  PaymentQueryRequest,
 } from "../../model/payment-model";
 import { cashService } from "./cash.service";
 import { midtransService } from "./midtrans.service";
@@ -17,26 +17,19 @@ import {
   serializePaymentDetail,
   serializePaymentList,
 } from "../../utils/formatter/payment";
+import type { PaymentQueryRequest } from "../../validations/payment.validation";
 
 export const getAllPaymentService = async (
   query: PaymentQueryRequest,
 ): Promise<ListPaymentResponse> => {
-  const {
-    page = 1,
-    limit = 10,
-    paymentNumber,
-    status,
-    orderId,
-    method,
-  } = query;
+  const { page, limit, status, search, method } = query;
   const skip = (page - 1) * limit;
 
   const result = await getAllPaymentRepository({
     skip,
     take: limit,
-    ...(paymentNumber && { paymentNumber }),
+    ...(search && { search }),
     ...(status && { status }),
-    ...(orderId && { orderId }),
     ...(method && { method }),
   });
 
@@ -55,7 +48,6 @@ export const createPaymentService = async (
   orderId: string,
   method: PaymentMethod,
   amount: number,
-  userId: string,
 ): Promise<CreatePaymentResponse> => {
   const paymentNumber: string = await generateCode("PAY");
 
@@ -63,7 +55,7 @@ export const createPaymentService = async (
     return await cashService(orderId, paymentNumber, amount);
 
   if (method === PaymentMethod.MIDTRANS)
-    return await midtransService(orderId, paymentNumber, userId);
+    return await midtransService(orderId, paymentNumber);
 
   throw new CustomError("Payment method not found", 404);
 };
@@ -76,4 +68,8 @@ export const getPaymentByIdService = async (
   if (!payment) throw new CustomError("Payment not found", 404);
 
   return serializePaymentDetail(payment);
+};
+
+export const deletePaymentService = async (id: string): Promise<void> => {
+  await deletePaymentRepository(id);
 };

@@ -16,7 +16,6 @@ export const serializePayment = (payment: any): PaymentResponse => ({
   change: Number(payment.change),
   providerTransactionId: payment.providerTransactionId ?? null,
   providerPaymentType: payment.providerPaymentType ?? null,
-  snapToken: payment.snapToken ?? null,
   paidAt: payment.paidAt ?? null,
 });
 

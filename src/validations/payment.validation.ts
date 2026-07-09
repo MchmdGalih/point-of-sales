@@ -1,5 +1,14 @@
 import { z } from "zod";
-import { PaymentMethod } from "../../generated/prisma/enums";
+import { PaymentMethod, PaymentStatus } from "../../generated/prisma/enums";
+import { paginationSchema } from "./pagination.validation";
+
+export const paymentQuerySchema = paginationSchema.extend({
+  search: z.string().trim().optional(),
+  status: z.nativeEnum(PaymentStatus).optional(),
+  method: z.nativeEnum(PaymentMethod).optional(),
+});
+
+export type PaymentQueryRequest = z.infer<typeof paymentQuerySchema>;
 
 export const paramsSchema = z.object({
   orderId: z

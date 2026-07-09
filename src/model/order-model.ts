@@ -39,17 +39,11 @@ export type OrderDetailResponse = Omit<OrderResponse, "itemsCount"> & {
   updatedAt: Date;
 };
 
-export type OrderQueryRequest = {
-  page?: number;
-  limit?: number;
+export type RepoQueryOrder = {
+  take: number;
+  skip: number;
   search?: string;
   status?: OrderStatus;
-  orderNumber?: string;
-};
-
-export type RepoQueryOrder = OrderQueryRequest & {
-  limit: number;
-  skip: number;
 };
 
 export type ListOrderResponse = PaginationResponse<OrderResponse>;

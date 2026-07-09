@@ -5,7 +5,6 @@ import type {
   ItemOrder,
   ListOrderResponse,
   OrderDetailResponse,
-  OrderQueryRequest,
 } from "../model/order-model";
 import {
   createOrderRepository,
@@ -21,21 +20,23 @@ import {
   serializeOrders,
 } from "../utils/formatter/order";
 import { generateCode } from "../utils/generate-code";
-import type { CreateOrderPayload } from "../validations/order.validation";
+import type {
+  CreateOrderPayload,
+  OrderQueryRequest,
+} from "../validations/order.validation";
 
 export const getAllOrderService = async (
   query: OrderQueryRequest,
 ): Promise<ListOrderResponse> => {
-  const { page = 1, limit = 10, search, status, orderNumber } = query;
+  const { page, limit, search, status } = query;
 
   const skip = (page - 1) * limit;
 
   const { orders, totalData } = await getAllOrderRepository({
     skip,
-    limit,
+    take: limit,
     ...(search && { search }),
     ...(status && { status }),
-    ...(orderNumber && { orderNumber }),
   });
 
   return {
@@ -115,5 +116,5 @@ export const getOrderByIdService = async (
 };
 
 export const deleteOrderService = async (id: string): Promise<void> => {
-  return await deleteOrderRepository(id);
+  await deleteOrderRepository(id);
 };

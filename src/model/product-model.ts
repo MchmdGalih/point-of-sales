@@ -26,7 +26,7 @@ export type ProductQueryRepo = {
   search?: string;
   minPrice?: number;
   maxPrice?: number;
-  inStock?: boolean;
+  stockStatus?: "LOW" | "OUT_OF_STOCK" | "AVAILABLE";
   categoryId?: string;
   take: number;
   skip: number;
