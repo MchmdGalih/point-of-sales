@@ -40,7 +40,6 @@ export const loginController = async (
       result.refreshToken,
       refreshTokenCookieConfig,
     );
-    console.log(COOKIE_NAME.REFRESH_TOKEN, result.refreshToken);
 
     res.status(200).json({
       status: "success",
@@ -81,7 +80,9 @@ export const refreshTokenController = async (
         accessToken: result.accessToken,
       },
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logoutController = async (
@@ -94,8 +95,6 @@ export const logoutController = async (
 
     if (!refreshToken) throw new CustomError("Refresh token not found", 404);
 
-    console.log(refreshToken, "--> controller");
-
     await logoutService(refreshToken);
 
     res.clearCookie(COOKIE_NAME.REFRESH_TOKEN, refreshTokenCookieConfig);
@@ -104,6 +103,6 @@ export const logoutController = async (
       message: "User logged out successfully",
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };

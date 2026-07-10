@@ -22,7 +22,3 @@ export const updateSessionByIdRepository = (
 ) => {
   return prisma.session.update({ where: { id }, data: payload });
 };
-
-export const deleteSessionByIdRepository = (refreshToken: string) => {
-  return prisma.session.delete({ where: { refreshToken } });
-};

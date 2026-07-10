@@ -3,10 +3,7 @@ import {
   logoutRepository,
   registerRepository,
 } from "../repositories/auth.repository";
-import {
-  getUserByIdRepository,
-  userFindExistingRepository,
-} from "../repositories/user.repository";
+import { userFindExistingRepository } from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
 import type {
@@ -18,7 +15,6 @@ import type {
 } from "../model/user-model";
 import {
   createSessionRepository,
-  deleteSessionByIdRepository,
   findSessionByRefreshTokenRepository,
   updateSessionByIdRepository,
 } from "../repositories/sessions.repository";
@@ -70,7 +66,7 @@ export const loginService = async (
   const expiredAt = new Date();
   expiredAt.setDate(expiredAt.getDate() + 7);
 
-  await createSessionRepository({
+  const creeateSession = await createSessionRepository({
     userId: user.id,
     refreshToken,
     expiredAt,
@@ -117,15 +113,9 @@ export const refreshTokenService = async (refreshToken: string) => {
 };
 
 export const logoutService = async (refreshToken: string): Promise<void> => {
-  console.log(refreshToken, "service -->");
-
   const session = await findSessionByRefreshTokenRepository(refreshToken);
 
-  console.log(session, "session -->");
-
   if (!session) throw new CustomError("Session not found", 404);
-
-  await deleteSessionByIdRepository(refreshToken);
 
   await logoutRepository(session.id);
 };
