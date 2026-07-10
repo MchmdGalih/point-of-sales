@@ -5,8 +5,12 @@ export type UserResponse = {
   id: string;
   username: string;
   email: string;
-  token?: string;
   role?: Role;
+};
+
+export type LoginResponse = UserResponse & {
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type UserListResponse = PaginationResponse<UserResponse>;
@@ -36,3 +40,9 @@ export type UserQueryRepository = {
   search?: string;
   role?: Role;
 };
+
+export interface TokenPayload {
+  id: string;
+  email: string;
+  role: string;
+}

@@ -15,13 +15,10 @@ export const registerRepository = async (payload: Prisma.UserCreateInput) => {
 };
 
 export const logoutRepository = async (id: string) => {
-  await prisma.user.update({
+  console.log(id);
+  await prisma.session.delete({
     where: {
       id,
-      deletedAt: null,
-    },
-    data: {
-      token: null,
     },
   });
 };

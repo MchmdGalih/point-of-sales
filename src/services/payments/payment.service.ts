@@ -71,5 +71,9 @@ export const getPaymentByIdService = async (
 };
 
 export const deletePaymentService = async (id: string): Promise<void> => {
+  const payment = await getPaymentByIdRepository(id);
+
+  if (!payment) throw new CustomError("Payment not found", 404);
+
   await deletePaymentRepository(id);
 };

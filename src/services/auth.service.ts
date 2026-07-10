@@ -11,9 +11,19 @@ import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
 import type {
   CreateUserRequest,
+  LoginResponse,
   LoginUserRequest,
+  TokenPayload,
   UserResponse,
 } from "../model/user-model";
+import {
+  createSessionRepository,
+  deleteSessionByIdRepository,
+  findSessionByRefreshTokenRepository,
+  updateSessionByIdRepository,
+} from "../repositories/sessions.repository";
+import { REFRESH_TOKEN_MAX_AGE } from "../config/cookie";
+
 export const registerService = async (
   payload: CreateUserRequest,
 ): Promise<UserResponse> => {
@@ -38,38 +48,84 @@ export const registerService = async (
 
 export const loginService = async (
   payload: LoginUserRequest,
-): Promise<UserResponse> => {
+): Promise<LoginResponse> => {
   const { email, password } = payload;
 
   const user = await userFindExistingRepository("", email);
 
-  if (!user) throw new CustomError("Invalid credentials", 400);
+  if (!user || !user.password)
+    throw new CustomError("Invalid credentials", 400);
 
-  const isMatch = await bcrypt.compare(password, user?.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) throw new CustomError("Invalid credentials", 400);
 
-  const tokenPayload: object = {
+  const tokenPayload: TokenPayload = {
     id: user.id,
     email: user.email,
     role: user.role,
   };
 
-  const token: string = generateToken(tokenPayload);
+  const { accessToken, refreshToken } = generateToken(tokenPayload);
+  const expiredAt = new Date();
+  expiredAt.setDate(expiredAt.getDate() + 7);
+
+  await createSessionRepository({
+    userId: user.id,
+    refreshToken,
+    expiredAt,
+  });
 
   return {
     id: user.id,
     username: user.username,
     email: user.email,
     role: user.role,
-    token,
+    accessToken,
+    refreshToken,
   };
 };
 
-export const logoutService = async (id: string): Promise<void> => {
-  const user = await getUserByIdRepository(id);
+export const refreshTokenService = async (refreshToken: string) => {
+  const session = await findSessionByRefreshTokenRepository(refreshToken);
 
-  if (!user) throw new CustomError("User not found", 404);
+  if (!session) throw new CustomError("Invalid refresh token", 400);
 
-  await logoutRepository(id);
+  const now = new Date();
+
+  if (session.expiredAt < now)
+    throw new CustomError("Refresh token expired", 400);
+
+  const tokenPayload: TokenPayload = {
+    id: session.user.id,
+    email: session.user.email,
+    role: session.user.role,
+  };
+
+  const { accessToken, refreshToken: newRefreshToken } =
+    generateToken(tokenPayload);
+
+  await updateSessionByIdRepository(session.id, {
+    refreshToken: newRefreshToken,
+    expiredAt: new Date(session.expiredAt.getTime() + REFRESH_TOKEN_MAX_AGE),
+  });
+
+  return {
+    accessToken,
+    refreshToken: newRefreshToken,
+  };
+};
+
+export const logoutService = async (refreshToken: string): Promise<void> => {
+  console.log(refreshToken, "service -->");
+
+  const session = await findSessionByRefreshTokenRepository(refreshToken);
+
+  console.log(session, "session -->");
+
+  if (!session) throw new CustomError("Session not found", 404);
+
+  await deleteSessionByIdRepository(refreshToken);
+
+  await logoutRepository(session.id);
 };

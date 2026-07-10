@@ -1,8 +1,6 @@
-import { logger } from "../config/logger";
 import { CustomError } from "../errors/customError";
 import type {
   CreateOrderResponse,
-  ItemOrder,
   ListOrderResponse,
   OrderDetailResponse,
 } from "../model/order-model";
@@ -116,5 +114,9 @@ export const getOrderByIdService = async (
 };
 
 export const deleteOrderService = async (id: string): Promise<void> => {
+  const order = await getOrderByIdRepository(id);
+
+  if (!order) throw new CustomError("Order not found", 404);
+
   await deleteOrderRepository(id);
 };

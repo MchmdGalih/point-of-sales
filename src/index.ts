@@ -1,6 +1,7 @@
 import "dotenv/config";
-import cors from "cors";
 import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import router from "./routes/index";
 import { errorHandler } from "./errors/errorHandler";
 import { requestlogger } from "./middleware/loggerMiddleware";
@@ -12,6 +13,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 app.use("/api/v1", router);
 app.use(requestlogger);
