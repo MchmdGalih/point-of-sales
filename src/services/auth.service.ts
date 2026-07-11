@@ -49,8 +49,7 @@ export const loginService = async (
 
   const user = await userFindExistingRepository("", email);
 
-  if (!user || !user.password)
-    throw new CustomError("Invalid credentials", 400);
+  if (!user) throw new CustomError("Invalid credentials", 400);
 
   const isMatch = await bcrypt.compare(password, user.password);
 

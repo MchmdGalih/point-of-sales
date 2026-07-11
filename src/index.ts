@@ -7,7 +7,7 @@ import { errorHandler } from "./errors/errorHandler";
 import { requestlogger } from "./middleware/loggerMiddleware";
 import { logger } from "./config/logger";
 
-const app = express();
+export const app = express();
 const port = 3000;
 
 app.use(express.json());

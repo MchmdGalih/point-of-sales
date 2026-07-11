@@ -74,6 +74,8 @@ JWT_SECRET="your-secret-key"
 PORT=3000
 MIDTRANS_SERVER_KEY = "your-midtrans-server-key"
 MIDTRANS_CLIENT_KEY = "your-midtrans-client-key"
+REFRESH_TOKEN_EXPIRED_DAY =
+NODE_ENV =
 
 ```
 

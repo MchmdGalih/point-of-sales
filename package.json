@@ -4,22 +4,43 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "testEnvironment": "node",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
     "@faker-js/faker": "^10.5.0",
+    "@jest/globals": "^30.4.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/midtrans-client": "^1.4.0",
     "@types/node": "^25.9.1",
     "@types/pg": "^8.20.0",
+    "@types/supertest": "^7.2.0",
+    "babel-jest": "^30.4.1",
+    "jest": "^30.4.2",
     "prisma": "^7.8.0",
+    "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
