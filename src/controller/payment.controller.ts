@@ -17,7 +17,7 @@ export const getAllPaymentController = async (
   try {
     const result = await getAllPaymentService(query);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Payment fetched successfully",
       data: result.data,
       meta: result.meta,
@@ -42,7 +42,7 @@ export const createPaymentController = async (
       amount,
     );
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Payment created successfully",
       data: result,
     });
@@ -61,7 +61,7 @@ export const getPaymentByIdController = async (
     const result = await getPaymentByIdService(id as string);
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Detail payment fetched successfully",
       data: result,
     });
@@ -79,7 +79,7 @@ export const deletePaymentController = async (
     const { id } = req.params;
     await deletePaymentService(id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Payment deleted successfully",
     });
   } catch (err) {

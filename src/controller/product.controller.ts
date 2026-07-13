@@ -18,7 +18,7 @@ export const getAllProductsController = async (
 
     const result = await getAllProductService(query);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Products fetched successfully",
       data: result.data,
       meta: result.meta,
@@ -36,7 +36,7 @@ export const createProductController = async (
   try {
     const result = await createProductService(req.body);
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "Product created successfully",
       data: result,
     });
@@ -53,7 +53,7 @@ export const getProductByIdController = async (
   try {
     const result = await getProductByIdService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Product fetched successfully",
       data: result,
     });
@@ -74,7 +74,7 @@ export const updateProductController = async (
     );
 
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "Product updated successfully",
       data: result,
     });
@@ -91,7 +91,7 @@ export const deleteProductController = async (
   try {
     await deleteProductService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Product deleted successfully",
     });
   } catch (error) {

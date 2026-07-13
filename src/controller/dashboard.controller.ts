@@ -18,7 +18,7 @@ export const getTodaySummaryController = async (
     const result = await getTodaySummaryService();
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Today summary fetched successfully",
       data: result,
     });
@@ -38,7 +38,7 @@ export const getTopSellingProductController = async (
     const result = await getTopSellingProductsService(period);
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Top selling products fetched successfully",
       data: result,
     });
@@ -56,7 +56,7 @@ export const getRecentOrdersController = async (
     const result = await getrecenstOrdersService();
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Recent orders fetched successfully",
       data: result,
     });
@@ -74,7 +74,7 @@ export const countPaymentMethodBreakdownController = async (
     const result = await countPaymentMethodService();
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Payment method breakdown fetched successfully",
       data: result,
     });
@@ -91,7 +91,7 @@ export const getLowStockProductController = async (
   try {
     const result = await getLowStockProductService();
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Low stock products fetched successfully",
       data: result,
     });
@@ -110,7 +110,7 @@ export const getSalesTrendController = async (
 
     const result = await getSalesTrendService(period);
     return res.status(200).json({
-      status: "success",
+      status: true,
       message: "Sales trend fetched successfully",
       data: result,
     });

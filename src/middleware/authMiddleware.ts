@@ -9,16 +9,16 @@ export const authMiddleware = (
   next: NextFunction,
 ) => {
   try {
-    const authHeader = req.get("Authorization")?.split(" ")[1];
+    const authHeader = req.get("Authorization");
 
     if (!authHeader) throw new CustomError("Unauthorized", 401);
 
-    const [type, token] = authHeader.split(" ");
+    const [type, accessToken] = authHeader.split(" ");
 
-    if (type !== "Bearer" || !token)
+    if (type !== "Bearer" || !accessToken)
       throw new CustomError("Invalid authorization format", 401);
 
-    const decode = verifyToken(token) as TokenPayload;
+    const decode = verifyToken(accessToken) as TokenPayload;
     req.user = decode;
 
     next();

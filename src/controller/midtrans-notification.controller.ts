@@ -13,7 +13,7 @@ export const handleMidtransNotificationController = async (
     logger.info("Midtrans notification received");
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Midtrans notification handled successfully",
     });
   } catch (error) {

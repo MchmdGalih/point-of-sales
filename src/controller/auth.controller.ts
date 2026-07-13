@@ -18,7 +18,7 @@ export const registerController = async (
     const result = await registerService(req.body);
 
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "User registered successfully",
       data: result,
     });
@@ -42,7 +42,7 @@ export const loginController = async (
     );
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User logged in successfully",
       data: {
         id: result.id,
@@ -74,7 +74,7 @@ export const refreshTokenController = async (
     );
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Refresh token success",
       data: {
         accessToken: result.accessToken,
@@ -99,7 +99,7 @@ export const logoutController = async (
 
     res.clearCookie(COOKIE_NAME.REFRESH_TOKEN, refreshTokenCookieConfig);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User logged out successfully",
     });
   } catch (error) {

@@ -17,7 +17,7 @@ export const getAllOrderController = async (
   try {
     const result = await getAllOrderService(query);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Order fetched successfully",
       data: result.data,
       meta: result.meta,
@@ -35,13 +35,13 @@ export const createOrderController = async (
   const userId = req.user?.id;
   const { orderItems, customerName } = req.body;
   try {
-    const result = await createOrderService(userId, {
+    const result = await createOrderService(userId as string, {
       orderItems,
       customerName,
     });
 
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "Order created successfully",
       data: result,
     });
@@ -59,7 +59,7 @@ export const getOrderByIdController = async (
     const { id } = req.params;
     const result = await getOrderByIdService(id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Order fetched successfully",
       data: result,
     });
@@ -77,7 +77,7 @@ export const deleteOrdetController = async (
     const { id } = req.params;
     await deleteOrderService(id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Order deleted successfully",
     });
   } catch (error) {

@@ -15,7 +15,7 @@ export const getAllCategoryController = async (
   try {
     const result = await getAllCategoryService();
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Category fetched successfully",
       data: result,
     });
@@ -32,7 +32,7 @@ export const createCategoryController = async (
   try {
     const result = await createCategoryService(req.body);
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "Category created successfully",
       data: result,
     });
@@ -49,7 +49,7 @@ export const getCategoryByIdController = async (
   try {
     const result = await getCategoryByIdService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Category fetched successfully",
       data: result,
     });
@@ -69,7 +69,7 @@ export const updateCategoryController = async (
       req.body,
     );
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Category updated successfully",
       data: result,
     });
@@ -86,7 +86,7 @@ export const deleteCategoryController = async (
   try {
     await deleteCategoryService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "Category deleted successfully",
     });
   } catch (error) {

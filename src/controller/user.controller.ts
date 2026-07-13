@@ -18,7 +18,7 @@ export const getAllUserController = async (
     const result = await getAllUserService(query);
 
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User fetched successfully",
       data: result.data,
       meta: result.meta,
@@ -36,7 +36,7 @@ export const createUserController = async (
   try {
     const result = await createUserService(req.body);
     res.status(201).json({
-      status: "success",
+      status: true,
       message: "User created successfully",
       data: result,
     });
@@ -53,7 +53,7 @@ export const getUserByIdController = async (
   try {
     const result = await getUserByIdService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User fetched successfully",
       data: result,
     });
@@ -70,7 +70,7 @@ export const updateUserController = async (
   try {
     const result = await updateUserService(req.params.id as string, req.body);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User updated successfully",
       data: result,
     });
@@ -87,7 +87,7 @@ export const deleteUserController = async (
   try {
     await deleteUserService(req.params.id as string);
     res.status(200).json({
-      status: "success",
+      status: true,
       message: "User deleted successfully",
     });
   } catch (error) {
