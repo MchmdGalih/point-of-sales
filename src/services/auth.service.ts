@@ -79,7 +79,7 @@ export const loginService = async (
 export const refreshTokenService = async (refreshToken: string) => {
   const session = await findSessionByRefreshTokenRepository(refreshToken);
 
-  if (!session) throw new CustomError("Invalid refresh token", 400);
+  if (!session) throw new CustomError("Session not found", 404);
 
   const now = new Date();
 

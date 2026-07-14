@@ -12,9 +12,8 @@ export const getAllPaymentController = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const query = res.locals.query as PaymentQueryRequest;
-
   try {
+    const query = res.locals.query as PaymentQueryRequest;
     const result = await getAllPaymentService(query);
     res.status(200).json({
       status: true,
@@ -34,8 +33,6 @@ export const createPaymentController = async (
 ) => {
   try {
     const { orderId } = req.params;
-    // const { method, amount } = req.body;
-
     const payload = {
       method: req.body.method,
       amount: req.body.amount,

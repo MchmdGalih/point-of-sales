@@ -54,12 +54,12 @@ export const createPaymentService = async (
   const paymentNumber: string = await generateCode("PAY");
 
   if (method === PaymentMethod.CASH) {
-    if (!amount) throw new CustomError("Amount is required", 400);
-    return await cashService(orderId, paymentNumber, amount);
+    if (amount === undefined) throw new CustomError("Amount is required", 400);
+    return cashService(orderId, paymentNumber, amount);
   }
 
   if (method === PaymentMethod.MIDTRANS)
-    return await midtransService(orderId, paymentNumber);
+    return midtransService(orderId, paymentNumber);
 
   throw new CustomError("Payment method not found", 404);
 };

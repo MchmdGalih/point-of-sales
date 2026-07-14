@@ -16,7 +16,6 @@ export const getAllProductsController = async (
 ) => {
   try {
     const query = res.locals.query as ProductQueryRequest;
-
     const result = await getAllProductService(query);
     res.status(200).json({
       status: true,

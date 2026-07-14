@@ -38,6 +38,7 @@ export const logger = winston.createLogger({
       filename: "logs/errors.log",
       level: "error",
     }),
+    
   ],
 });
 
