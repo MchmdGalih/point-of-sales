@@ -14,6 +14,7 @@ import {
   updateUserSchema,
   userQuerySchema,
 } from "../validations/users.validtion";
+import { paramsIdSchema } from "../validations/params-id.validation";
 
 const userRoutes = Router();
 
@@ -25,16 +26,22 @@ userRoutes.post(
   authorizeRole("ADMIN"),
   createUserController,
 );
-userRoutes.get("/:id", getUserByIdController);
+userRoutes.get(
+  "/:id",
+  validate(paramsIdSchema, "params"),
+  getUserByIdController,
+);
 userRoutes.put(
   "/edit/:id",
   validate(updateUserSchema, "body"),
+  validate(paramsIdSchema, "params"),
   authMiddleware,
   authorizeRole("ADMIN"),
   updateUserController,
 );
 userRoutes.delete(
   "/delete/:id",
+  validate(paramsIdSchema, "params"),
   authMiddleware,
   authorizeRole("ADMIN"),
   deleteUserController,

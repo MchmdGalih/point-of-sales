@@ -6,6 +6,7 @@ import {
   getUserByIdService,
   updateUserService,
 } from "../services/user.service";
+import type { CreateUserDTO, UpdateUserDTO } from "../dto/user.dto";
 
 export const getAllUserController = async (
   req: Request,
@@ -34,7 +35,14 @@ export const createUserController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await createUserService(req.body);
+    const payload: CreateUserDTO = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role,
+    };
+
+    const result = await createUserService(payload);
     res.status(201).json({
       status: true,
       message: "User created successfully",
@@ -68,7 +76,14 @@ export const updateUserController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await updateUserService(req.params.id as string, req.body);
+    const payload: UpdateUserDTO = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role,
+    };
+
+    const result = await updateUserService(req.params.id as string, payload);
     res.status(200).json({
       status: true,
       message: "User updated successfully",

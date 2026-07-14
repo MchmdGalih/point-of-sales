@@ -13,16 +13,18 @@ export const orderSchema = z.object({
   customerName: z
     .string({ message: "Customer name is required" })
     .min(3, { message: "Name must be at least 3 characters" }),
-  orderItems: z.array(
-    z.object({
-      productId: z
-        .string({ message: "Product id is required" })
-        .uuid({ message: "Invalid product id" }),
-      quantity: z.number({ message: "Quantity is required" }).min(1, {
-        message: "Quantity must be at least 1",
+  orderItems: z
+    .array(
+      z.object({
+        productId: z
+          .string({ message: "Product id is required" })
+          .uuid({ message: "Invalid product id" }),
+        quantity: z.number({ message: "Quantity is required" }).min(1, {
+          message: "Quantity must be at least 1",
+        }),
       }),
-    }),
-  ),
+    )
+    .min(1, { message: "Order items is required" }),
 });
 
 export type CreateOrderPayload = z.infer<typeof orderSchema>;

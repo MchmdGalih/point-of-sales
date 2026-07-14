@@ -1,3 +1,4 @@
+import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type {
   CategoryResponse,
@@ -10,7 +11,7 @@ export const getAllCategoryRepository = () => {
   });
 };
 
-export const createCategoryRepository = (name: CreateCategoryRequest) => {
+export const createCategoryRepository = (name: Prisma.CategoryCreateInput) => {
   return prisma.category.create({ data: name });
 };
 
@@ -25,7 +26,7 @@ export const getCategoryByIdRepository = (id: string) => {
 
 export const updateCategoryRepository = (
   id: string,
-  name: CreateCategoryRequest,
+  name: Prisma.CategoryUpdateInput,
 ) => {
   return prisma.category.update({
     where: {

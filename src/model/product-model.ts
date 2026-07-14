@@ -12,16 +12,6 @@ export type ProductResponse = {
   };
 };
 
-export type CreateProductRequest = {
-  name: string;
-  price: number;
-  stock: number;
-  sku: string;
-  categoryId: string;
-};
-
-export type UpdateProductRequest = Partial<Omit<CreateProductRequest, "sku">>;
-
 export type ProductQueryRepo = {
   search?: string;
   minPrice?: number;

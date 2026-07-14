@@ -7,6 +7,7 @@ import {
   updateProductService,
 } from "../services/product.service";
 import type { ProductQueryRequest } from "../validations/product.validation";
+import type { CreateProductDTO, UpdateProductDTO } from "../dto/product.dto";
 
 export const getAllProductsController = async (
   req: Request,
@@ -34,7 +35,15 @@ export const createProductController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await createProductService(req.body);
+    const payload: CreateProductDTO = {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      stock: req.body.stock,
+      categoryId: req.body.categoryId,
+    };
+
+    const result = await createProductService(payload);
     res.status(201).json({
       status: true,
       message: "Product created successfully",
@@ -68,10 +77,15 @@ export const updateProductController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await updateProductService(
-      req.params.id as string,
-      req.body,
-    );
+    const payload: UpdateProductDTO = {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      stock: req.body.stock,
+      categoryId: req.body.categoryId,
+    };
+
+    const result = await updateProductService(req.params.id as string, payload);
 
     res.status(201).json({
       status: true,

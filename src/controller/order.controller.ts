@@ -6,6 +6,7 @@ import {
   getOrderByIdService,
 } from "../services/order.service";
 import type { OrderQueryRequest } from "../validations/order.validation";
+import type { CreateOrderDTO } from "../dto/order.dto";
 
 export const getAllOrderController = async (
   req: Request,
@@ -32,13 +33,14 @@ export const createOrderController = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const userId = req.user?.id;
-  const { orderItems, customerName } = req.body;
   try {
-    const result = await createOrderService(userId as string, {
-      orderItems,
-      customerName,
-    });
+    const userId = req.user?.id;
+    const payload: CreateOrderDTO = {
+      orderItems: req.body.orderItems,
+      customerName: req.body.customerName,
+    };
+
+    const result = await createOrderService(userId as string, payload);
 
     res.status(201).json({
       status: true,

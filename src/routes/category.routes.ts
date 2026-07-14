@@ -5,11 +5,12 @@ import {
   getAllCategoryController,
   getCategoryByIdController,
   updateCategoryController,
-} from "../controller/caregory.controller";
+} from "../controller/category.controller";
 import { validate } from "../middleware/zodValidation";
 import { categorySchema } from "../validations/category.validation";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { authorizeRole } from "../middleware/roleMiddleware";
+import { paramsIdSchema } from "../validations/params-id.validation";
 
 const categoryRoutes = Router();
 
@@ -22,9 +23,14 @@ categoryRoutes.post(
   createCategoryController,
 );
 
-categoryRoutes.get("/:id", getCategoryByIdController);
+categoryRoutes.get(
+  "/:id",
+  validate(paramsIdSchema, "params"),
+  getCategoryByIdController,
+);
 categoryRoutes.put(
   "/edit/:id",
+  validate(paramsIdSchema, "params"),
   validate(categorySchema, "body"),
   authMiddleware,
   authorizeRole("ADMIN"),
@@ -32,6 +38,7 @@ categoryRoutes.put(
 );
 categoryRoutes.delete(
   "/delete/:id",
+  validate(paramsIdSchema, "params"),
   authMiddleware,
   authorizeRole("ADMIN"),
   deleteCategoryController,

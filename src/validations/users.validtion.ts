@@ -9,6 +9,8 @@ export const userQuerySchema = paginationSchema.extend({
 
 export type UserQueryRequest = z.infer<typeof userQuerySchema>;
 
+
+
 export const createUserSchema = z.object({
   username: z
     .string({ message: "Username is required" })

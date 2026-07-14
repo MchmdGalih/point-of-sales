@@ -1,0 +1,16 @@
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
+
+export interface RegisterDTO {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface TokenPayload {
+  id: string;
+  email: string;
+  role: string;
+}

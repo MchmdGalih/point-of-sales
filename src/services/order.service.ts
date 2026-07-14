@@ -1,3 +1,4 @@
+import type { CreateOrderDTO } from "../dto/order.dto";
 import { CustomError } from "../errors/customError";
 import type {
   CreateOrderResponse,
@@ -18,10 +19,7 @@ import {
   serializeOrders,
 } from "../utils/formatter/order";
 import { generateCode } from "../utils/generate-code";
-import type {
-  CreateOrderPayload,
-  OrderQueryRequest,
-} from "../validations/order.validation";
+import type { OrderQueryRequest } from "../validations/order.validation";
 
 export const getAllOrderService = async (
   query: OrderQueryRequest,
@@ -50,7 +48,7 @@ export const getAllOrderService = async (
 
 export const createOrderService = async (
   userId: string,
-  payload: CreateOrderPayload,
+  payload: CreateOrderDTO,
 ): Promise<CreateOrderResponse> => {
   const { orderItems, customerName } = payload;
 
@@ -105,7 +103,7 @@ export const createOrderService = async (
 
 export const getOrderByIdService = async (
   id: string,
-): Promise<OrderDetailResponse> => {
+): Promise<OrderDetailResponse | null> => {
   const order = await getOrderByIdRepository(id);
 
   if (!order) throw new CustomError("Order not found", 404);

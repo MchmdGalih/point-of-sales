@@ -7,6 +7,4 @@ export const categorySchema = z.object({
     .min(3, { message: "Name must be at least 3 characters" }),
 });
 
-export type CreateCategoryDTO = z.infer<typeof categorySchema>;
-
-export type UpdateCategoryDTO = Partial<CreateCategoryDTO>;
+export const updateCategorySchema = categorySchema.partial();

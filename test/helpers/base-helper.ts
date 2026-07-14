@@ -74,13 +74,5 @@ export class BaseHelper {
     };
   }
 
-  static async delete() {
-    await prisma.user.deleteMany({
-      where: {
-        username: {
-          contains: "test",
-        },
-      },
-    });
-  }
+ 
 }

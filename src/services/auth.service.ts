@@ -6,22 +6,17 @@ import {
 import { userFindExistingRepository } from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
-import type {
-  CreateUserRequest,
-  LoginResponse,
-  LoginUserRequest,
-  TokenPayload,
-  UserResponse,
-} from "../model/user-model";
+import type { LoginResponse, UserResponse } from "../model/user-model";
 import {
   createSessionRepository,
   findSessionByRefreshTokenRepository,
   updateSessionByIdRepository,
 } from "../repositories/sessions.repository";
 import { REFRESH_TOKEN_MAX_AGE } from "../config/cookie";
+import type { LoginDTO, RegisterDTO, TokenPayload } from "../dto/auth.dto";
 
 export const registerService = async (
-  payload: CreateUserRequest,
+  payload: RegisterDTO,
 ): Promise<UserResponse> => {
   const { username, email, password } = payload;
 
@@ -43,7 +38,7 @@ export const registerService = async (
 };
 
 export const loginService = async (
-  payload: LoginUserRequest,
+  payload: LoginDTO,
 ): Promise<LoginResponse> => {
   const { email, password } = payload;
 

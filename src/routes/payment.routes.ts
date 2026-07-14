@@ -13,6 +13,7 @@ import {
 } from "../validations/payment.validation";
 import { validate } from "../middleware/zodValidation";
 import { authorizeRole } from "../middleware/roleMiddleware";
+import { paramsIdSchema } from "../validations/params-id.validation";
 
 const paymentRoutes = Router();
 
@@ -38,10 +39,15 @@ paymentRoutes.post(
   createPaymentController,
 );
 
-paymentRoutes.get("/:id", getPaymentByIdController);
+paymentRoutes.get(
+  "/:id",
+  validate(paramsIdSchema, "params"),
+  getPaymentByIdController,
+);
 
 paymentRoutes.delete(
   "/:id",
+  validate(paramsIdSchema, "params"),
   authMiddleware,
   authorizeRole("ADMIN"),
   deletePaymentController,

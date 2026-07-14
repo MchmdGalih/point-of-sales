@@ -6,6 +6,7 @@ import {
   getCategoryByIdService,
   updateCategoryService,
 } from "../services/category.service";
+import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dto/category.dto";
 
 export const getAllCategoryController = async (
   req: Request,
@@ -30,7 +31,11 @@ export const createCategoryController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await createCategoryService(req.body);
+    const payload: CreateCategoryDTO = {
+      name: req.body.name,
+    };
+
+    const result = await createCategoryService(payload);
     res.status(201).json({
       status: true,
       message: "Category created successfully",
@@ -64,9 +69,13 @@ export const updateCategoryController = async (
   next: NextFunction,
 ) => {
   try {
+    const payload: UpdateCategoryDTO = {
+      name: req.body.name,
+    };
+
     const result = await updateCategoryService(
       req.params.id as string,
-      req.body,
+      payload,
     );
     res.status(200).json({
       status: true,

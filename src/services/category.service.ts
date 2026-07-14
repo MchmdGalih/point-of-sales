@@ -1,8 +1,5 @@
 import { CustomError } from "../errors/customError";
-import type {
-  CategoryResponse,
-  CreateCategoryRequest,
-} from "../model/category-model";
+import type { CategoryResponse } from "../model/category-model";
 import {
   createCategoryRepository,
   deleteCategoryRepository,
@@ -10,13 +7,14 @@ import {
   getCategoryByIdRepository,
   updateCategoryRepository,
 } from "../repositories/category.repository";
+import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dto/category.dto";
 
 export const getAllCategoryService = async (): Promise<CategoryResponse[]> => {
   return await getAllCategoryRepository();
 };
 
 export const createCategoryService = async (
-  name: CreateCategoryRequest,
+  name: CreateCategoryDTO,
 ): Promise<CategoryResponse> => {
   return await createCategoryRepository(name);
 };
@@ -33,7 +31,7 @@ export const getCategoryByIdService = async (
 
 export const updateCategoryService = async (
   id: string,
-  name: CreateCategoryRequest,
+  name: UpdateCategoryDTO,
 ): Promise<CategoryResponse> => {
   return await updateCategoryRepository(id, name);
 };

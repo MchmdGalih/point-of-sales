@@ -5,9 +5,10 @@ import {
   refreshTokenService,
   registerService,
 } from "../services/auth.service";
-import { logger } from "../config/logger";
+
 import { COOKIE_NAME, refreshTokenCookieConfig } from "../config/cookie";
 import { CustomError } from "../errors/customError";
+import type { LoginDTO, RegisterDTO } from "../dto/auth.dto";
 
 export const registerController = async (
   req: Request,
@@ -15,7 +16,13 @@ export const registerController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await registerService(req.body);
+    const payload: RegisterDTO = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    const result = await registerService(payload);
 
     res.status(201).json({
       status: true,
@@ -33,7 +40,12 @@ export const loginController = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await loginService(req.body);
+    const payload: LoginDTO = {
+      email: req.body.email,
+      password: req.body.password,
+    };
+
+    const result = await loginService(payload);
 
     res.cookie(
       COOKIE_NAME.REFRESH_TOKEN,

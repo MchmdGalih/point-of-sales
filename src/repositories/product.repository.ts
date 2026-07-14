@@ -65,23 +65,17 @@ export const getAllProductRepository = async (query: ProductQueryRepo) => {
   return { products, totalData };
 };
 
-export const createProductRepository = (payload: CreateProductRequest) => {
+export const createProductRepository = (
+  payload: Prisma.ProductCreateManyInput,
+) => {
   return prisma.product.create({
     data: payload,
-    include: {
-      category: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
   });
 };
 
 export const updateProductRepository = (
   id: string,
-  payload: UpdateProductRequest,
+  payload: Prisma.ProductUncheckedUpdateManyInput,
 ) => {
   return prisma.product.update({
     where: {

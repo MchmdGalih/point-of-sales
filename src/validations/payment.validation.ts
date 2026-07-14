@@ -18,10 +18,20 @@ export const paramsSchema = z.object({
     .uuid({ message: "Invalid order id" }),
 });
 
-export const paymentSchema = z.object({
-  method: z.nativeEnum(PaymentMethod),
-  amount: z
-    .number({ message: "Amount is required" })
-    .min(1, { message: "Amount must be at least 1" })
-    .optional(),
-});
+export const paymentSchema = z
+  .object({
+    method: z.nativeEnum(PaymentMethod),
+    amount: z
+      .number({ message: "Amount is required" })
+      .min(1, { message: "Amount must be at least 1" })
+      .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.method === "CASH" && !data.amount) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["amount"],
+        message: "Amount is required for cash payment",
+      });
+    }
+  });

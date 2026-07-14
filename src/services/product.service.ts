@@ -1,6 +1,6 @@
+import type { CreateProductDTO, UpdateProductDTO } from "../dto/product.dto";
 import { CustomError } from "../errors/customError";
 import type {
-  CreateProductRequest,
   ListProductResponse,
   ProductResponse,
   UpdateProductRequest,
@@ -49,7 +49,7 @@ export const getAllProductService = async (
 };
 
 export const createProductService = async (
-  payload: CreateProductRequest,
+  payload: CreateProductDTO,
 ): Promise<ProductResponse> => {
   const { name, price, stock, categoryId } = payload;
 
@@ -82,7 +82,7 @@ export const getProductByIdService = async (
 
 export const updateProductService = async (
   id: string,
-  payload: UpdateProductRequest,
+  payload: UpdateProductDTO,
 ): Promise<ProductResponse> => {
   const product = await getProductByIdRepository(id);
 

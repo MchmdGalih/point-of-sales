@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import supertest from "supertest";
-import { app } from "../../src/index";
-import { UserHelper } from "../helpers/user-helper";
+import { app } from "../../../src/index";
+import { UserHelper } from "../../helpers/user-helper";
 
 describe("DELETE api/v1/user/:id", () => {
   let userId: string;

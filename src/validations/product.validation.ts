@@ -15,9 +15,7 @@ export const productSchema = z.object({
   name: z
     .string({ message: "Name is required" })
     .min(3, { message: "Name must be at least 3 characters" }),
-  price: z.coerce
-    .number({ message: "Price is required" })
-    .min(1, { message: "Price must be at least 1" }),
+  price: z.coerce.number({ message: "Price is required" }).positive(),
   stock: z.coerce
     .number({ message: "Stock is required" })
     .min(1, { message: "Stock must be at least 1" }),

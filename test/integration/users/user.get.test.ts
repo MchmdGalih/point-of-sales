@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import supertest from "supertest";
-import { app } from "../../src/index";
-import { logger } from "../../src/config/logger";
-import { UserHelper } from "../helpers/user-helper";
+import { app } from "../../../src/index";
+import { logger } from "../../../src/config/logger";
+import { UserHelper } from "../../helpers/user-helper";
 
 describe("GET /api/v1/user/", () => {
   it("should return list of users", async () => {

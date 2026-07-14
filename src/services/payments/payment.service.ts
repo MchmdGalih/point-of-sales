@@ -18,6 +18,7 @@ import {
   serializePaymentList,
 } from "../../utils/formatter/payment";
 import type { PaymentQueryRequest } from "../../validations/payment.validation";
+import type { CreatePaymentDTO } from "../../dto/payment.dto";
 
 export const getAllPaymentService = async (
   query: PaymentQueryRequest,
@@ -46,13 +47,16 @@ export const getAllPaymentService = async (
 
 export const createPaymentService = async (
   orderId: string,
-  method: PaymentMethod,
-  amount: number,
+  payload: CreatePaymentDTO,
 ): Promise<CreatePaymentResponse> => {
+  const { method, amount } = payload;
+
   const paymentNumber: string = await generateCode("PAY");
 
-  if (method === PaymentMethod.CASH)
+  if (method === PaymentMethod.CASH) {
+    if (!amount) throw new CustomError("Amount is required", 400);
     return await cashService(orderId, paymentNumber, amount);
+  }
 
   if (method === PaymentMethod.MIDTRANS)
     return await midtransService(orderId, paymentNumber);

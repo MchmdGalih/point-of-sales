@@ -1,5 +1,5 @@
 import express from "express";
-import type { TokenPayload } from "../../model/user-model";
+import type { TokenPayload } from "../../dto/auth.dto";
 
 declare global {
   namespace Express {

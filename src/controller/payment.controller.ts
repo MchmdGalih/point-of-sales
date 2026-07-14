@@ -34,13 +34,14 @@ export const createPaymentController = async (
 ) => {
   try {
     const { orderId } = req.params;
-    const { method, amount } = req.body;
+    // const { method, amount } = req.body;
 
-    const result = await createPaymentService(
-      orderId as string,
-      method,
-      amount,
-    );
+    const payload = {
+      method: req.body.method,
+      amount: req.body.amount,
+    };
+
+    const result = await createPaymentService(orderId as string, payload);
     res.status(200).json({
       status: true,
       message: "Payment created successfully",

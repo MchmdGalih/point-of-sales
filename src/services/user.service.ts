@@ -9,13 +9,9 @@ import {
   userFindExistingRepository,
 } from "../repositories/user.repository";
 import { Role } from "../../generated/prisma/enums";
-import type {
-  CreateUserRequest,
-  UpdateUserRequest,
-  UserListResponse,
-  UserResponse,
-} from "../model/user-model";
+import type { UserListResponse, UserResponse } from "../model/user-model";
 import type { UserQueryRequest } from "../validations/users.validtion";
+import type { CreateUserDTO, UpdateUserDTO } from "../dto/user.dto";
 
 export const getAllUserService = async (
   query: UserQueryRequest,
@@ -43,7 +39,7 @@ export const getAllUserService = async (
 };
 
 export const createUserService = async (
-  payload: CreateUserRequest,
+  payload: CreateUserDTO,
 ): Promise<UserResponse> => {
   const { username, email, password, role } = payload;
 
@@ -73,7 +69,7 @@ export const getUserByIdService = async (id: string): Promise<UserResponse> => {
 
 export const updateUserService = async (
   id: string,
-  payload: UpdateUserRequest,
+  payload: UpdateUserDTO,
 ): Promise<UserResponse> => {
   const data = Object.fromEntries(
     Object.entries(payload).filter(([_, value]) => value !== undefined),

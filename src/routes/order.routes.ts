@@ -9,6 +9,7 @@ import { authMiddleware } from "../middleware/authMiddleware";
 import { validate } from "../middleware/zodValidation";
 import { orderQuerySchema, orderSchema } from "../validations/order.validation";
 import { authorizeRole } from "../middleware/roleMiddleware";
+import { paramsIdSchema } from "../validations/params-id.validation";
 
 const orderRoutes = Router();
 
@@ -24,9 +25,14 @@ orderRoutes.post(
   createOrderController,
 );
 
-orderRoutes.get("/:id", getOrderByIdController);
+orderRoutes.get(
+  "/:id",
+  validate(paramsIdSchema, "params"),
+  getOrderByIdController,
+);
 orderRoutes.delete(
   "/:id",
+  validate(paramsIdSchema, "params"),
   authMiddleware,
   authorizeRole("ADMIN"),
   deleteOrdetController,

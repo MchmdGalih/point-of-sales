@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 import supertest from "supertest";
-import { app } from "../../src/index";
-import { logger } from "../../src/config/logger";
-import { UserHelper } from "../helpers/user-helper";
+import { app } from "../../../src/index";
+import { logger } from "../../../src/config/logger";
+import { UserHelper } from "../../helpers/user-helper";
 
 describe("POST/api/v1/user/create", () => {
   let accessToken: string;

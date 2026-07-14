@@ -22,4 +22,14 @@ export class UserHelper extends BaseHelper {
 
     return user!.id;
   }
+
+  static async delete() {
+    await prisma.user.deleteMany({
+      where: {
+        username: {
+          contains: "test",
+        },
+      },
+    });
+  }
 }
