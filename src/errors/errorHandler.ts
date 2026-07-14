@@ -1,8 +1,21 @@
+import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "../../generated/prisma/client";
 import { CustomError } from "./customError";
 import { handlePrismaError } from "./prismaError";
+import jwt from "jsonwebtoken";
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (err instanceof jwt.TokenExpiredError) {
+    return res.status(401).json({
+      status: false,
+      message: "Token expired",
+    });
+  }
 
-export const errorHandler = (err: any, req: any, res: any, next: any) => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const mapped = handlePrismaError(err);
     return res.status(mapped.statusCode).json({

@@ -20,7 +20,7 @@ export const handlePrismaError = (
       return {
         statusCode: 404,
         status: false,
-        message: "Data not found",
+        message: "Data not found!",
       };
     }
     default:

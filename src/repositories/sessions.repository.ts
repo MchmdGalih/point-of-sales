@@ -8,10 +8,8 @@ export const createSessionRepository = (
 };
 
 export const findSessionByRefreshTokenRepository = (refreshToken: string) => {
-  console.log(refreshToken, "repository");
-
   return prisma.session.findUnique({
-    where: { refreshToken: refreshToken },
+    where: { refreshToken },
     include: { user: true },
   });
 };

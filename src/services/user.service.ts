@@ -57,7 +57,7 @@ export const createUserService = async (
     username,
     email,
     password: hashedPassword,
-    role: role ?? Role.CASHIER,
+    role: role || Role.CASHIER,
   });
 
   return result;

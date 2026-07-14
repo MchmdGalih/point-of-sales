@@ -10,7 +10,7 @@ export const authorizeRole = (...roles: string[]) => {
     if (!roles.includes(req.user.role))
       return res.status(403).json({
         status: false,
-        message: "Forbidden, you are not authorized to access this page!",
+        message: "Forbidden, you are not authorized to access this!",
       });
 
     next();

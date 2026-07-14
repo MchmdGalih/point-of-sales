@@ -65,7 +65,7 @@ export const loginService = async (
   const expiredAt = new Date();
   expiredAt.setDate(expiredAt.getDate() + 7);
 
-  const creeateSession = await createSessionRepository({
+  await createSessionRepository({
     userId: user.id,
     refreshToken,
     expiredAt,
