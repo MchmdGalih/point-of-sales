@@ -1,6 +1,6 @@
-import type { PaginationResponse } from "./paginations";
+import type { PaginationResponse } from "../types/pagination";
 
-export type ProductResponse = {
+export interface ProductResponse {
   id: string;
   name: string;
   price: number;
@@ -10,9 +10,9 @@ export type ProductResponse = {
     id: string;
     name: string;
   };
-};
+}
 
-export type ProductQueryRepo = {
+export interface ProductQueryRepo {
   search?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -20,6 +20,6 @@ export type ProductQueryRepo = {
   categoryId?: string;
   take: number;
   skip: number;
-};
+}
 
-export type ListProductResponse = PaginationResponse<ProductResponse>;
+export interface ListProductResponse extends PaginationResponse<ProductResponse> {}

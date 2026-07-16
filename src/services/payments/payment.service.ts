@@ -6,11 +6,7 @@ import {
   getPaymentByIdRepository,
 } from "../../repositories/payment.repository";
 import { generateCode } from "../../utils/generate-code";
-import type {
-  CreatePaymentResponse,
-  ListPaymentResponse,
-  PaymentDetailResponse,
-} from "../../model/payment-model";
+
 import { cashService } from "./cash.service";
 import { midtransService } from "./midtrans.service";
 import {
@@ -19,6 +15,11 @@ import {
 } from "../../utils/formatter/payment";
 import type { PaymentQueryRequest } from "../../validations/payment.validation";
 import type { CreatePaymentDTO } from "../../dto/payment.dto";
+import type {
+  CreatePaymentResponse,
+  ListPaymentResponse,
+  PaymentDetailResponse,
+} from "../../types/payment.type";
 
 export const getAllPaymentService = async (
   query: PaymentQueryRequest,

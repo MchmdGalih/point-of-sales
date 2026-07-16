@@ -4,7 +4,7 @@ import {
   type Prisma,
 } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { RepoQueryPayment } from "../model/payment-model";
+import type { RepoQueryPayment } from "../types/payment.type";
 
 export const getAllPaymentRepository = async (query: RepoQueryPayment) => {
   const { skip, take, search, method, status } = query;

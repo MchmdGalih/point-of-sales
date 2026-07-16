@@ -10,8 +10,18 @@ import { decrementProductRepository } from "../repositories/product.repository";
 import { handleMapStatus } from "../utils/map-handle-status";
 import { verifyMidtransSignature } from "../utils/verify-midtrans-signature";
 
+interface ParamsPayloadMidtrans {
+  order_id: string;
+  transaction_status: string;
+  payment_type: string;
+  signature_key: string;
+  gross_amount: string;
+  status_code: string;
+  transaction_id: string;
+}
+
 export const handleMidtransNotificationService = async (
-  notification: any,
+  notification: ParamsPayloadMidtrans,
 ): Promise<void> => {
   const {
     order_id: orderNumber,

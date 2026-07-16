@@ -1,10 +1,6 @@
 import type { CreateProductDTO, UpdateProductDTO } from "../dto/product.dto";
 import { CustomError } from "../errors/customError";
-import type {
-  ListProductResponse,
-  ProductResponse,
-  UpdateProductRequest,
-} from "../model/product-model";
+
 import { getCategoryByIdRepository } from "../repositories/category.repository";
 import {
   createProductRepository,
@@ -13,6 +9,7 @@ import {
   getProductByIdRepository,
   updateProductRepository,
 } from "../repositories/product.repository";
+import type { ListProductResponse, ProductResponse } from "../types/product.type";
 import {
   serializeProduct,
   serializeProducts,

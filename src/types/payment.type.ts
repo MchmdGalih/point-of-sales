@@ -2,10 +2,10 @@ import type {
   PaymentMethod,
   PaymentStatus,
 } from "../../generated/prisma/enums";
-import type { OrderItems } from "./order-model";
-import type { PaginationResponse } from "./paginations";
+import type { OrderItems } from "../types/order.types";
+import type { PaginationResponse } from "../types/pagination";
 
-export type PaymentResponse = {
+export interface PaymentResponse {
   id: string;
   orderId: string;
   method: PaymentMethod;
@@ -17,9 +17,9 @@ export type PaymentResponse = {
   providerTransactionId?: string | null;
   providerPaymentType?: string | null;
   paidAt: Date;
-};
+}
 
-export type CashPaymentResponse = {
+export interface CashPaymentResponse {
   id: string;
   paymentNumber: string;
   method: PaymentMethod;
@@ -38,18 +38,18 @@ export type CashPaymentResponse = {
     };
     orderItems: OrderItems[];
   };
-};
+}
 
-export type MidtransPaymentResponse = {
+export interface MidtransPaymentResponse {
   snapToken: string;
   redirectUrl: string;
-};
+}
 
 export type CreatePaymentResponse =
   | CashPaymentResponse
   | MidtransPaymentResponse;
 
-export type PaymentDetailResponse = {
+export interface PaymentDetailResponse {
   id: string;
   paymentNumber: string;
   method: PaymentMethod;
@@ -78,15 +78,15 @@ export type PaymentDetailResponse = {
       subtotal: number;
     },
   ];
-};
+}
 
-export type RepoQueryPayment = {
+export interface RepoQueryPayment {
   take: number;
   skip: number;
   search?: string;
   paymentNumber?: string;
   status?: PaymentStatus;
   method?: PaymentMethod;
-};
+}
 
-export type ListPaymentResponse = PaginationResponse<PaymentResponse>;
+export interface ListPaymentResponse extends PaginationResponse<PaymentResponse> {}

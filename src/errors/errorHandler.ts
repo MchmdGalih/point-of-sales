@@ -3,6 +3,8 @@ import { Prisma } from "../../generated/prisma/client";
 import { CustomError } from "./customError";
 import { handlePrismaError } from "./prismaError";
 import jwt from "jsonwebtoken";
+import type { ErrorResponse } from "../types/api-response";
+
 export const errorHandler = (
   err: Error,
   req: Request,
@@ -10,29 +12,35 @@ export const errorHandler = (
   next: NextFunction,
 ) => {
   if (err instanceof jwt.TokenExpiredError) {
-    return res.status(401).json({
-      status: false,
+    const response: ErrorResponse = {
+      success: false,
       message: "Token expired",
-    });
+    };
+
+    return res.status(401).json(response);
   }
 
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const mapped = handlePrismaError(err);
-    return res.status(mapped.statusCode).json({
-      status: mapped.status,
+    const response: ErrorResponse = {
+      success: false,
       message: mapped.message,
-    });
+    };
+
+    return res.status(mapped.statusCode).json(response);
   }
 
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({
-      status: false,
+    const response: ErrorResponse = {
+      success: false,
       message: err.message,
-    });
+    };
+    return res.status(err.statusCode).json(response);
   }
 
-  return res.status(500).json({
-    status: false,
-    message: "Something went wrong",
-  });
+  const response: ErrorResponse = {
+    success: false,
+    message: "Something went wrong, please try again later",
+  };
+  return res.status(500).json(response);
 };

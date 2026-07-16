@@ -7,6 +7,7 @@ import {
   updateUserService,
 } from "../services/user.service";
 import type { CreateUserDTO, UpdateUserDTO } from "../dto/user.dto";
+import { paginationResponse, successResponse } from "../utils/response";
 
 export const getAllUserController = async (
   req: Request,
@@ -18,12 +19,12 @@ export const getAllUserController = async (
 
     const result = await getAllUserService(query);
 
-    res.status(200).json({
-      status: true,
-      message: "User fetched successfully",
-      data: result.data,
-      meta: result.meta,
-    });
+    return paginationResponse(
+      res,
+      "Users fetched successfully",
+      result.data,
+      result.meta,
+    );
   } catch (error) {
     next(error);
   }
@@ -43,11 +44,7 @@ export const createUserController = async (
     };
 
     const result = await createUserService(payload);
-    res.status(201).json({
-      status: true,
-      message: "User created successfully",
-      data: result,
-    });
+    return successResponse(res, result, "User created successfully");
   } catch (error) {
     next(error);
   }
@@ -60,11 +57,7 @@ export const getUserByIdController = async (
 ) => {
   try {
     const result = await getUserByIdService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "User fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "User fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -84,11 +77,7 @@ export const updateUserController = async (
     };
 
     const result = await updateUserService(req.params.id as string, payload);
-    res.status(200).json({
-      status: true,
-      message: "User updated successfully",
-      data: result,
-    });
+    return successResponse(res, result, "User updated successfully");
   } catch (error) {
     next(error);
   }
@@ -101,10 +90,7 @@ export const deleteUserController = async (
 ) => {
   try {
     await deleteUserService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "User deleted successfully",
-    });
+    return successResponse(res, null, "User deleted successfully");
   } catch (error) {
     next(error);
   }

@@ -1,8 +1,8 @@
 import type { OrderStatus } from "../../generated/prisma/enums";
-import type { PaginationResponse } from "./paginations";
-import type { PaymentResponse } from "./payment-model";
+import type { PaginationResponse } from "../types/pagination";
+import type { PaymentResponse } from "../types/payment.type";
 
-export type OrderResponse = {
+export interface OrderResponse {
   id: string;
   orderNumber: string;
   totalAmount: number;
@@ -14,36 +14,36 @@ export type OrderResponse = {
   status: OrderStatus;
   itemsCount: number;
   createdAt: Date;
-};
+}
 
 export interface ItemOrder {
   productId: string;
   quantity: number;
 }
 
-export type OrderItems = {
+export interface OrderItems {
   productId: string;
   quantity: number;
   price: number;
   productName: string;
   subtotal: number;
-};
+}
 
-export type CreateOrderResponse = Omit<OrderResponse, "itemsCount"> & {
+export interface CreateOrderResponse extends Omit<OrderResponse, "itemsCount"> {
   items: Omit<OrderItems, "product">[];
-};
-export type OrderDetailResponse = Omit<OrderResponse, "itemsCount"> & {
+}
+export interface OrderDetailResponse extends Omit<OrderResponse, "itemsCount"> {
   orderItems: OrderItems[];
   payment?: PaymentResponse | null;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-export type RepoQueryOrder = {
+export interface RepoQueryOrder {
   take: number;
   skip: number;
   search?: string;
   status?: OrderStatus;
-};
+}
 
 export type ListOrderResponse = PaginationResponse<OrderResponse>;

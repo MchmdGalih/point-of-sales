@@ -1,6 +1,6 @@
 import { OrderStatus, type Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { RepoQueryOrder } from "../model/order-model";
+import type { RepoQueryOrder } from "../types/order.types";
 
 export const getAllOrderRepository = async (query: RepoQueryOrder) => {
   const { take, skip, search, status } = query;

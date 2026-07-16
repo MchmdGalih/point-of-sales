@@ -1,9 +1,5 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type {
-  CategoryResponse,
-  CreateCategoryRequest,
-} from "../model/category-model";
 
 export const getAllCategoryRepository = () => {
   return prisma.category.findMany({

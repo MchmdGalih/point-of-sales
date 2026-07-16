@@ -9,9 +9,9 @@ import {
   userFindExistingRepository,
 } from "../repositories/user.repository";
 import { Role } from "../../generated/prisma/enums";
-import type { UserListResponse, UserResponse } from "../model/user-model";
 import type { UserQueryRequest } from "../validations/users.validtion";
 import type { CreateUserDTO, UpdateUserDTO } from "../dto/user.dto";
+import type { UserListResponse, UserResponse } from "../types/user.type";
 
 export const getAllUserService = async (
   query: UserQueryRequest,

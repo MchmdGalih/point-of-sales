@@ -2,7 +2,7 @@ import { Prisma } from "../../generated/prisma/client";
 
 export const handlePrismaError = (
   err: Prisma.PrismaClientKnownRequestError,
-) => {
+)=> {
   switch (err.code) {
     case "P2002":
       return {

@@ -1,10 +1,3 @@
-import type { Payment } from "../../generated/prisma/client";
-import type {
-  DashboardSummaryResponse,
-  PaymentMethodBreakdownResponse,
-  RecentOrdersResponse,
-  TopSellingProductResponse,
-} from "../model/dashboard-model";
 import {
   countPendingOrdersByDateRange,
   getDistinctCustomerByDateRange,
@@ -24,6 +17,14 @@ import {
   getTotalProducts,
   getTotalLowStockProducts,
 } from "../repositories/product.repository";
+import type {
+  DashboardSummaryResponse,
+  GetSalesTrendResponse,
+  PaymentMethodBreakdownResponse,
+  RecentOrdersResponse,
+  SalesTrendItem,
+  TopSellingProductResponse,
+} from "../types/dashboard.types";
 import { getDateRange, type PeriodeType } from "../utils/date";
 
 export const getTodaySummaryService =
@@ -121,10 +122,12 @@ export const getLowStockProductService = async () => {
   return await getTotalLowStockProducts();
 };
 
-export const getSalesTrendService = async (period: PeriodeType) => {
+export const getSalesTrendService = async (
+  period: PeriodeType,
+): Promise<GetSalesTrendResponse> => {
   const { start, end } = getDateRange(period);
 
-  const sales = await getSalesTrendRepository(start, end);
+  const sales = (await getSalesTrendRepository(start, end)) as SalesTrendItem[];
 
   return {
     period,

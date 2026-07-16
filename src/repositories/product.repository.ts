@@ -1,10 +1,6 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type {
-  CreateProductRequest,
-  ProductQueryRepo,
-  UpdateProductRequest,
-} from "../model/product-model";
+import type { ProductQueryRepo } from "../types/product.type";
 
 const LOW_STOCK_THRESHOLD = 5;
 

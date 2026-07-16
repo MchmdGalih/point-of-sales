@@ -1,11 +1,13 @@
 import crypto from "crypto";
 
-export const verifyMidtransSignature = (params: {
+interface Params {
   orderId: string;
   signatureKey: string;
   statusCode: string;
   grossAmount: string;
-}) => {
+}
+
+export const verifyMidtransSignature = (params: Params): boolean => {
   const { orderId, statusCode, signatureKey, grossAmount } = params;
 
   const hash = crypto

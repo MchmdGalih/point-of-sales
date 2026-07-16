@@ -1,10 +1,6 @@
 import type { CreateOrderDTO } from "../dto/order.dto";
 import { CustomError } from "../errors/customError";
-import type {
-  CreateOrderResponse,
-  ListOrderResponse,
-  OrderDetailResponse,
-} from "../model/order-model";
+
 import {
   createOrderRepository,
   deleteOrderRepository,
@@ -13,6 +9,7 @@ import {
 } from "../repositories/order.repository";
 import { getProductByIdsRepository } from "../repositories/product.repository";
 import { getUserByIdRepository } from "../repositories/user.repository";
+import type { CreateOrderResponse, ListOrderResponse, OrderDetailResponse } from "../types/order.types";
 import {
   serializeCreateOrder,
   serializeOrderDetail,

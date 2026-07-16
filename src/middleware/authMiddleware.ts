@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { CustomError } from "../errors/customError";
 import { verifyToken } from "../utils/token-service";
-import type { TokenPayload } from "../model/user-model";
+import type { TokenPayload } from "../dto/auth.dto";
 
 export const authMiddleware = (
   req: Request,

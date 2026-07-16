@@ -19,6 +19,7 @@ import { paramsIdSchema } from "../validations/params-id.validation";
 const userRoutes = Router();
 
 userRoutes.get("/", validate(userQuerySchema, "query"), getAllUserController);
+
 userRoutes.post(
   "/create",
   validate(createUserSchema, "body"),

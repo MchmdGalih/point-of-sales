@@ -6,7 +6,6 @@ import {
 import { userFindExistingRepository } from "../repositories/user.repository";
 import { CustomError } from "../errors/customError";
 import { generateToken } from "../utils/token-service";
-import type { LoginResponse, UserResponse } from "../model/user-model";
 import {
   createSessionRepository,
   findSessionByRefreshTokenRepository,
@@ -14,6 +13,7 @@ import {
 } from "../repositories/sessions.repository";
 import { REFRESH_TOKEN_MAX_AGE } from "../config/cookie";
 import type { LoginDTO, RegisterDTO, TokenPayload } from "../dto/auth.dto";
+import type { LoginResponse, UserResponse } from "../types/user.type";
 
 export const registerService = async (
   payload: RegisterDTO,

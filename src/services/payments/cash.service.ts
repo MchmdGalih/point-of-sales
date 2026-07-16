@@ -7,7 +7,6 @@ import {
 import { logger } from "../../config/logger";
 import { CustomError } from "../../errors/customError";
 import { prisma } from "../../lib/prisma";
-import type { CashPaymentResponse } from "../../model/payment-model";
 import {
   getOrderByIdRepository,
   updateOrderStatusRepository,
@@ -18,7 +17,7 @@ import {
 } from "../../repositories/payment.repository";
 import { decrementProductRepository } from "../../repositories/product.repository";
 import { serializeCashPayment } from "../../utils/formatter/payment";
-import type { Payment } from "../../../generated/prisma/client";
+import type { CashPaymentResponse } from "../../types/payment.type";
 
 export const cashService = async (
   orderId: string,

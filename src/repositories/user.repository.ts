@@ -1,6 +1,6 @@
 import type { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
-import type { UserQueryRepository } from "../model/user-model";
+import type { UserQueryRepository } from "../types/user.type";
 export const getAllUserRepository = async (query: UserQueryRepository) => {
   const { skip, take, search, role } = query;
 

@@ -1,5 +1,4 @@
 import { CustomError } from "../errors/customError";
-import type { CategoryResponse } from "../model/category-model";
 import {
   createCategoryRepository,
   deleteCategoryRepository,
@@ -8,6 +7,7 @@ import {
   updateCategoryRepository,
 } from "../repositories/category.repository";
 import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dto/category.dto";
+import type { CategoryResponse } from "../types/category.type";
 
 export const getAllCategoryService = async (): Promise<CategoryResponse[]> => {
   return await getAllCategoryRepository();
