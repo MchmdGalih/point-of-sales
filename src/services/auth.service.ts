@@ -44,11 +44,11 @@ export const loginService = async (
 
   const user = await userFindExistingRepository("", email);
 
-  if (!user) throw new CustomError("Invalid credentials", 400);
+  if (!user) throw new CustomError("Invalid credentials", 401);
 
   const isMatch = await bcrypt.compare(password, user.password);
 
-  if (!isMatch) throw new CustomError("Invalid credentials", 400);
+  if (!isMatch) throw new CustomError("Invalid credentials", 401);
 
   const tokenPayload: TokenPayload = {
     id: user.id,
@@ -84,7 +84,7 @@ export const refreshTokenService = async (refreshToken: string) => {
   const now = new Date();
 
   if (session.expiredAt < now)
-    throw new CustomError("Refresh token expired", 400);
+    throw new CustomError("Refresh token expired", 401);
 
   const tokenPayload: TokenPayload = {
     id: session.user.id,
