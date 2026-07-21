@@ -8,6 +8,7 @@ import {
 } from "../services/product.service";
 import type { ProductQueryRequest } from "../validations/product.validation";
 import type { CreateProductDTO, UpdateProductDTO } from "../dto/product.dto";
+import { paginationResponse, successResponse } from "../utils/response";
 
 export const getAllProductsController = async (
   req: Request,
@@ -17,12 +18,12 @@ export const getAllProductsController = async (
   try {
     const query = res.locals.query as ProductQueryRequest;
     const result = await getAllProductService(query);
-    res.status(200).json({
-      status: true,
-      message: "Products fetched successfully",
-      data: result.data,
-      meta: result.meta,
-    });
+    return paginationResponse(
+      res,
+      "Products fetched successfully",
+      result.data,
+      result.meta,
+    );
   } catch (error) {
     next(error);
   }
@@ -43,11 +44,7 @@ export const createProductController = async (
     };
 
     const result = await createProductService(payload);
-    res.status(201).json({
-      status: true,
-      message: "Product created successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Product created successfully");
   } catch (error) {
     next(error);
   }
@@ -60,11 +57,7 @@ export const getProductByIdController = async (
 ) => {
   try {
     const result = await getProductByIdService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "Product fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Product fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -85,12 +78,7 @@ export const updateProductController = async (
     };
 
     const result = await updateProductService(req.params.id as string, payload);
-
-    res.status(201).json({
-      status: true,
-      message: "Product updated successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Product updated successfully");
   } catch (error) {
     next(error);
   }
@@ -103,10 +91,7 @@ export const deleteProductController = async (
 ) => {
   try {
     await deleteProductService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "Product deleted successfully",
-    });
+    return successResponse(res, null, "Product deleted successfully");
   } catch (error) {
     next(error);
   }

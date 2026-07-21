@@ -8,6 +8,7 @@ import {
   getTopSellingProductsService,
 } from "../services/dashboard.service";
 import type { DashboardQuery } from "../validations/dashboard.validation";
+import { successResponse } from "../utils/response";
 
 export const getTodaySummaryController = async (
   req: Request,
@@ -17,11 +18,7 @@ export const getTodaySummaryController = async (
   try {
     const result = await getTodaySummaryService();
 
-    res.status(200).json({
-      status: true,
-      message: "Today summary fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Today summary fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -37,11 +34,11 @@ export const getTopSellingProductController = async (
 
     const result = await getTopSellingProductsService(period);
 
-    res.status(200).json({
-      status: true,
-      message: "Top selling products fetched successfully",
-      data: result,
-    });
+    return successResponse(
+      res,
+      result,
+      "Top selling products fetched successfully",
+    );
   } catch (error) {
     next(error);
   }
@@ -55,11 +52,7 @@ export const getRecentOrdersController = async (
   try {
     const result = await getrecenstOrdersService();
 
-    res.status(200).json({
-      status: true,
-      message: "Recent orders fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Recent orders fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -73,11 +66,11 @@ export const countPaymentMethodBreakdownController = async (
   try {
     const result = await countPaymentMethodService();
 
-    res.status(200).json({
-      status: true,
-      message: "Payment method breakdown fetched successfully",
-      data: result,
-    });
+    return successResponse(
+      res,
+      result,
+      "Payment method breakdown fetched successfully",
+    );
   } catch (error) {
     next(error);
   }
@@ -90,11 +83,11 @@ export const getLowStockProductController = async (
 ) => {
   try {
     const result = await getLowStockProductService();
-    res.status(200).json({
-      status: true,
-      message: "Low stock products fetched successfully",
-      data: result,
-    });
+    return successResponse(
+      res,
+      result,
+      "Low stock products fetched successfully",
+    );
   } catch (error) {
     next(error);
   }
@@ -109,11 +102,8 @@ export const getSalesTrendController = async (
     const { period } = res.locals.query as DashboardQuery;
 
     const result = await getSalesTrendService(period);
-    return res.status(200).json({
-      status: true,
-      message: "Sales trend fetched successfully",
-      data: result,
-    });
+
+    return successResponse(res, result, "Sales trend fetched successfully");
   } catch (error) {
     next(error);
   }

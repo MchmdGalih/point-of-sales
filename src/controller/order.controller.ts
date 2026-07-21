@@ -7,6 +7,7 @@ import {
 } from "../services/order.service";
 import type { OrderQueryRequest } from "../validations/order.validation";
 import type { CreateOrderDTO } from "../dto/order.dto";
+import { paginationResponse, successResponse } from "../utils/response";
 
 export const getAllOrderController = async (
   req: Request,
@@ -17,12 +18,12 @@ export const getAllOrderController = async (
 
   try {
     const result = await getAllOrderService(query);
-    res.status(200).json({
-      status: true,
-      message: "Order fetched successfully",
-      data: result.data,
-      meta: result.meta,
-    });
+    return paginationResponse(
+      res,
+      "Orders fetched successfully",
+      result.data,
+      result.meta,
+    );
   } catch (error) {
     next(error);
   }
@@ -42,11 +43,7 @@ export const createOrderController = async (
 
     const result = await createOrderService(userId as string, payload);
 
-    res.status(201).json({
-      status: true,
-      message: "Order created successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Order created successfully");
   } catch (error) {
     next(error);
   }
@@ -60,11 +57,7 @@ export const getOrderByIdController = async (
   try {
     const { id } = req.params;
     const result = await getOrderByIdService(id as string);
-    res.status(200).json({
-      status: true,
-      message: "Order fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Order fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -78,10 +71,7 @@ export const deleteOrdetController = async (
   try {
     const { id } = req.params;
     await deleteOrderService(id as string);
-    res.status(200).json({
-      status: true,
-      message: "Order deleted successfully",
-    });
+    return successResponse(res, null, "Order deleted successfully");
   } catch (error) {
     next(error);
   }

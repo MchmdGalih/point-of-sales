@@ -7,6 +7,7 @@ import {
   updateCategoryService,
 } from "../services/category.service";
 import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dto/category.dto";
+import { successResponse } from "../utils/response";
 
 export const getAllCategoryController = async (
   req: Request,
@@ -15,11 +16,7 @@ export const getAllCategoryController = async (
 ) => {
   try {
     const result = await getAllCategoryService();
-    res.status(200).json({
-      status: true,
-      message: "Category fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Categories fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -36,11 +33,7 @@ export const createCategoryController = async (
     };
 
     const result = await createCategoryService(payload);
-    res.status(201).json({
-      status: true,
-      message: "Category created successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Category created successfully");
   } catch (error) {
     next(error);
   }
@@ -53,11 +46,7 @@ export const getCategoryByIdController = async (
 ) => {
   try {
     const result = await getCategoryByIdService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "Category fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Category fetched successfully");
   } catch (error) {
     next(error);
   }
@@ -77,11 +66,7 @@ export const updateCategoryController = async (
       req.params.id as string,
       payload,
     );
-    res.status(200).json({
-      status: true,
-      message: "Category updated successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Category updated successfully");
   } catch (error) {
     next(error);
   }
@@ -94,10 +79,7 @@ export const deleteCategoryController = async (
 ) => {
   try {
     await deleteCategoryService(req.params.id as string);
-    res.status(200).json({
-      status: true,
-      message: "Category deleted successfully",
-    });
+    return successResponse(res, null, "Category deleted successfully");
   } catch (error) {
     next(error);
   }

@@ -9,6 +9,7 @@ import {
 import { COOKIE_NAME, refreshTokenCookieConfig } from "../config/cookie";
 import { CustomError } from "../errors/customError";
 import type { LoginDTO, RegisterDTO } from "../dto/auth.dto";
+import { successResponse } from "../utils/response";
 
 export const registerController = async (
   req: Request,
@@ -23,12 +24,7 @@ export const registerController = async (
     };
 
     const result = await registerService(payload);
-
-    res.status(201).json({
-      status: true,
-      message: "User registered successfully",
-      data: result,
-    });
+    return successResponse(res, result, "User registered successfully");
   } catch (error) {
     next(error);
   }
@@ -53,17 +49,19 @@ export const loginController = async (
       refreshTokenCookieConfig,
     );
 
-    res.status(200).json({
-      status: true,
-      message: "User logged in successfully",
-      data: {
-        id: result.id,
-        username: result.username,
-        email: result.email,
-        role: result.role,
-        accessToken: result.accessToken,
+    const { id, username, email, role, accessToken } = result;
+
+    return successResponse(
+      res,
+      {
+        id,
+        username,
+        email,
+        role,
+        accessToken,
       },
-    });
+      "User logged in successfully",
+    );
   } catch (error) {
     next(error);
   }
@@ -85,13 +83,7 @@ export const refreshTokenController = async (
       refreshTokenCookieConfig,
     );
 
-    res.status(200).json({
-      status: true,
-      message: "Refresh token success",
-      data: {
-        accessToken: result.accessToken,
-      },
-    });
+    return successResponse(res, result.accessToken, "Refresh token success");
   } catch (error) {
     next(error);
   }
@@ -110,10 +102,7 @@ export const logoutController = async (
     await logoutService(refreshToken);
 
     res.clearCookie(COOKIE_NAME.REFRESH_TOKEN, refreshTokenCookieConfig);
-    res.status(200).json({
-      status: true,
-      message: "User logged out successfully",
-    });
+    return successResponse(res, null, "User logged out successfully");
   } catch (error) {
     next(error);
   }

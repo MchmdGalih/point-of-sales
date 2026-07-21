@@ -6,6 +6,7 @@ import {
   getPaymentByIdService,
 } from "../services/payments/payment.service";
 import type { PaymentQueryRequest } from "../validations/payment.validation";
+import { paginationResponse, successResponse } from "../utils/response";
 
 export const getAllPaymentController = async (
   req: Request,
@@ -15,12 +16,12 @@ export const getAllPaymentController = async (
   try {
     const query = res.locals.query as PaymentQueryRequest;
     const result = await getAllPaymentService(query);
-    res.status(200).json({
-      status: true,
-      message: "Payment fetched successfully",
-      data: result.data,
-      meta: result.meta,
-    });
+    return paginationResponse(
+      res,
+      "All payments fetched successfully",
+      result.data,
+      result.meta,
+    );
   } catch (error) {
     next(error);
   }
@@ -39,11 +40,7 @@ export const createPaymentController = async (
     };
 
     const result = await createPaymentService(orderId as string, payload);
-    res.status(200).json({
-      status: true,
-      message: "Payment created successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Payment created successfully");
   } catch (error) {
     next(error);
   }
@@ -58,11 +55,7 @@ export const getPaymentByIdController = async (
     const { id } = req.params;
     const result = await getPaymentByIdService(id as string);
 
-    res.status(200).json({
-      status: true,
-      message: "Detail payment fetched successfully",
-      data: result,
-    });
+    return successResponse(res, result, "Payment fetched successfully");
   } catch (err) {
     next(err);
   }
@@ -76,10 +69,8 @@ export const deletePaymentController = async (
   try {
     const { id } = req.params;
     await deletePaymentService(id as string);
-    res.status(200).json({
-      status: true,
-      message: "Payment deleted successfully",
-    });
+
+    return successResponse(res, null, "Payment deleted successfully");
   } catch (err) {
     next(err);
   }

@@ -97,7 +97,7 @@ export const refreshTokenService = async (refreshToken: string) => {
 
   await updateSessionByIdRepository(session.id, {
     refreshToken: newRefreshToken,
-    expiredAt: new Date(session.expiredAt.getTime() + REFRESH_TOKEN_MAX_AGE),
+    expiredAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE),
   });
 
   return {
