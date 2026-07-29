@@ -1,9 +1,9 @@
 import { PaymentMethod, PaymentStatus } from "../../../generated/prisma/enums";
 import { snap } from "../../config/midtrans";
 import { CustomError } from "../../errors/customError";
-import type { MidtransPaymentResponse } from "../../model/payment-model";
 import { getOrderByIdRepository } from "../../repositories/order.repository";
 import { createPaymentRepository } from "../../repositories/payment.repository";
+import type { MidtransPaymentResponse } from "../../types/payment.type";
 
 export const midtransService = async (
   orderId: string,
