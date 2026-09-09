@@ -105,6 +105,6 @@ export const getSalesTrendController = async (
 
     return successResponse(res, result, "Sales trend fetched successfully");
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };

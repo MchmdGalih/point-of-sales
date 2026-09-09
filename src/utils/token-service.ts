@@ -13,7 +13,7 @@ interface Token {
 }
 
 export const generateToken = (payload: TokenPayload): Token => {
-  const accessToken = jwt.sign(payload, secret, { expiresIn: "15m" });
+  const accessToken = jwt.sign(payload, secret, { expiresIn: "15s" });
   const refreshToken = jwt.sign(payload, secret, { expiresIn: "7d" });
 
   return { accessToken, refreshToken };

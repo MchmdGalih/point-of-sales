@@ -1,6 +1,7 @@
 import { OrderStatus, type Prisma } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { RepoQueryOrder } from "../types/order.types";
+import type { PeriodeType } from "../utils/date";
 
 export const getAllOrderRepository = async (query: RepoQueryOrder) => {
   const { take, skip, search, status } = query;
@@ -184,14 +185,52 @@ export const getRecentOrdersRepository = () => {
   });
 };
 
-export const getSalesTrendRepository = (startOfDate: Date, endOfDate: Date) => {
-  return prisma.$queryRaw`
-    SELECT DATE("createdAt") as date,
-    COUNT("id")::int as "totalOrders",
-    SUM("totalAmount")::int as "revenue"
-    FROM "Order"
-    WHERE "createdAt" >= ${startOfDate} AND  "createdAt" <= ${endOfDate} AND "deletedAt" IS NULL AND "status" = 'COMPLETED'
-    GROUP BY DATE("createdAt")
-    ORDER BY date asc 
-    `;
+export const getSalesTrendRepository = (
+  startOfDate: Date,
+  endOfDate: Date,
+  period: PeriodeType,
+) => {
+  switch (period) {
+    case "today":
+      return prisma.$queryRaw`
+        SELECT DATE_TRUNC('hour', "createdAt") AS date,
+        COUNT('id')::int AS "totalOrders",
+        COALESCE(SUM("totalAmount"), 0)::int AS revenue
+        FROM "Order"
+          where "createdAt" >= ${startOfDate}
+          AND "createdAt" <= ${endOfDate}
+          AND "deletedAt" IS NULL
+          AND "status" = 'COMPLETED'
+        GROUP BY DATE_TRUNC('hour', "createdAt")
+        ORDER BY date ASC
+        `;
+
+    case "week":
+    case "month":
+      return prisma.$queryRaw`
+          SELECT DATE_TRUNC('day', "createdAt") AS date,
+          COUNT('id')::int AS "totalOrders",
+          COALESCE(SUM("totalAmount"), 0)::int AS revenue
+          FROM "Order"
+          WHERE "createdAt" >= ${startOfDate}
+          AND "createdAt" <= ${endOfDate}
+          AND "deletedAt" IS NULL
+          AND "status" = 'COMPLETED'
+          GROUP BY DATE_TRUNC('day', "createdAt")
+          ORDER BY date ASC
+          `;
+    case "year":
+      return prisma.$queryRaw`
+          SELECT DATE_TRUNC('month', "createdAt") AS date,
+          COUNT('id')::int AS "totalOrders",
+          COALESCE(SUM("totalAmount"), 0)::int AS revenue
+          FROM "Order"
+          WHERE "createdAt" >= ${startOfDate}
+          AND "createdAt" <= ${endOfDate}
+          AND "deletedAt" IS NULL
+          AND "status" = 'COMPLETED'
+          GROUP BY DATE_TRUNC('month', "createdAt")
+          ORDER BY date ASC
+          `;
+  }
 };

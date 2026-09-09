@@ -127,7 +127,11 @@ export const getSalesTrendService = async (
 ): Promise<GetSalesTrendResponse> => {
   const { start, end } = getDateRange(period);
 
-  const sales = (await getSalesTrendRepository(start, end)) as SalesTrendItem[];
+  const sales = (await getSalesTrendRepository(
+    start,
+    end,
+    period,
+  )) as SalesTrendItem[];
 
   return {
     period,
